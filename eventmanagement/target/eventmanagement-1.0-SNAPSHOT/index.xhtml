@@ -5,153 +5,173 @@
       xmlns:p="http://primefaces.org/ui">
 
 <h:head>
-    <title>Login - Portal</title>
+    <title>Home - Portal Manhattan</title>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
 </h:head>
-    
+
 <h:outputStylesheet>
     body, html {
         margin: 0;
         padding: 0;
-        font-family: 'Segoe UI', sans-serif;
+        font-family: 'Segoe UI', 'Roboto', Arial, sans-serif;
+        background: linear-gradient(120deg, #1e1e2f 0%, #3a3a5d 100%);
+        min-height: 100vh;
     }
 
-    .login-body {
-        height: 100vh;
-        background: linear-gradient(135deg, #1e1e2f, #3a3a5d);
+    .home-container {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .navbar {
+        background: rgba(255,255,255,0.95);
+        box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1.2rem 2.5rem;
+        border-bottom-left-radius: 18px;
+        border-bottom-right-radius: 18px;
+    }
+
+    .navbar .logo {
+        height: 48px;
+    }
+
+    .navbar .user-info {
+        display: flex;
+        align-items: center;
+        gap: 1.2rem;
+    }
+
+    .navbar .user-avatar {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 2px solid #007ad9;
+        background: #e3e3e3;
+    }
+
+    .navbar .user-name {
+        font-weight: 600;
+        color: #222;
+        font-size: 1.1rem;
+    }
+
+    .navbar .logout-btn {
+        background: #ff5252;
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0.5rem 1.2rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background 0.2s;
+        box-shadow: 0 2px 8px rgba(255,82,82,0.08);
+    }
+
+    .navbar .logout-btn:hover {
+        background: #d32f2f;
+    }
+
+    .main-content {
+        flex: 1;
         display: flex;
         align-items: center;
         justify-content: center;
+        padding: 2rem 0;
     }
 
-    .login-card {
-        background: #fff;
-        padding: 2.5rem 2rem;
-        border-radius: 20px;
-        box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-        max-width: 400px;
+    .welcome-card {
+        background: rgba(255,255,255,0.98);
+        border-radius: 24px;
+        box-shadow: 0 8px 32px rgba(30,30,47,0.13);
+        padding: 3rem 2.5rem 2.5rem 2.5rem;
+        max-width: 520px;
         width: 100%;
-        animation: fadeInUp 0.5s ease-out;
-    }
-
-    .login-header {
         text-align: center;
-        margin-bottom: 2rem;
+        animation: fadeInUp 0.7s cubic-bezier(.39,.575,.565,1) both;
     }
 
-    .login-header .logo {
-        width: 60px;
-        margin-bottom: 1rem;
+    .welcome-card h1 {
+        font-size: 2.2rem;
+        color: #1e1e2f;
+        margin-bottom: 0.5rem;
+        font-weight: 700;
     }
 
-    .login-header h2 {
-        margin: 0;
-        color: #333;
-    }
-
-    .login-header span {
-        color: #888;
-        font-size: 14px;
-    }
-
-    .input-wrapper {
-        position: relative;
-        margin-bottom: 1.5rem;
-    }
-
-    .input-icon {
-        position: absolute;
-        left: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: #999;
-        font-size: 18px;
-    }
-
-    .input {
-        width: 100%;
-        padding-left: 35px !important;
-        padding-right: 10px;
-        box-sizing: border-box;
-    }
-
-    .login-button {
-        width: 100%;
-        background: #007ad9;
-        border: none;
-        font-size: 16px;
-        padding: 0.75rem;
-        border-radius: 8px;
-        margin-top: 0.5rem;
-        transition: background 0.3s ease;
-    }
-
-    .login-button:hover {
-        background: #005fa3;
-    }
-
-    .login-footer {
-        text-align: center;
-        margin-top: 1.5rem;
-        font-size: 14px;
-        color: #666;
-    }
-
-    .login-footer a {
+    .welcome-card h2 {
+        font-size: 1.3rem;
         color: #007ad9;
-        text-decoration: none;
+        margin-bottom: 1.5rem;
+        font-weight: 500;
     }
 
-    .login-footer a:hover {
-        text-decoration: underline;
+    .welcome-card p {
+        color: #444;
+        font-size: 1.1rem;
+        margin-bottom: 2.2rem;
+    }
+
+    .welcome-actions {
+        display: flex;
+        justify-content: center;
+        gap: 1.2rem;
+    }
+
+    .welcome-actions .p-button {
+        min-width: 140px;
+        font-size: 1rem;
+        border-radius: 8px;
+        padding: 0.7rem 1.2rem;
     }
 
     @keyframes fadeInUp {
-        from {
-            transform: translateY(20px);
+        0% {
             opacity: 0;
+            transform: translateY(30px);
         }
-        to {
-            transform: translateY(0);
+        100% {
             opacity: 1;
+            transform: translateY(0);
         }
     }
 </h:outputStylesheet>
 
-<h:body styleClass="login-body">
-
-    <h:form id="loginForm">
-        <p:growl id="growl" showDetail="true" life="3000"/>
-
-        <div class="login-card">
-            <div class="login-header">
-                <p:graphicImage name="images/logo.png" library="img" styleClass="logo"/>
-                <h2>Bem-vindo de volta</h2>
-                <span>Insira suas credenciais para continuar</span>
+<h:body>
+    <div class="home-container">
+        <div class="navbar">
+            <div>
+                <p:graphicImage name="images/logo-manhattan.png" library="manhattan-layout" styleClass="logo"/>
             </div>
-
-            <div class="login-fields">
-                <div class="input-wrapper">
-                    <i class="pi pi-user input-icon"/>
-                    <p:inputText id="username" value="#{loginBean.username}" placeholder="Usuário" required="true"
-                                 styleClass="input"/>
-                </div>
-
-                <div class="input-wrapper">
-                    <i class="pi pi-lock input-icon"/>
-                    <p:password id="password" value="#{loginBean.password}" placeholder="Senha" feedback="false"
-                                required="true" styleClass="input"/>
-                </div>
-
-                <p:commandButton value="Entrar" icon="pi pi-sign-in" action="#{loginBean.login}" update="growl"
-                                 styleClass="login-button" />
-            </div>
-
-            <div class="login-footer">
-                <span>Esqueceu a senha? <a href="#">Recuperar</a></span>
+            <div class="user-info">
+                <p:graphicImage name="images/avatar-default.png" library="manhattan-layout" styleClass="user-avatar"/>
+                <span class="user-name">
+                    Olá, #{loginController.usuario.nome != null ? loginController.usuario.nome : 'Usuário'}
+                </span>
+                <h:form>
+                    <p:commandButton value="Sair" icon="pi pi-sign-out" action="#{loginController.logout}" styleClass="logout-btn" />
+                </h:form>
             </div>
         </div>
-    </h:form>
 
+        <div class="main-content">
+            <div class="welcome-card">
+                <h1>Bem-vindo ao Portal Manhattan</h1>
+                <h2>Seu hub de eventos e conexões</h2>
+                <p>
+                    Aqui você pode gerenciar seus eventos, acompanhar novidades e interagir com a comunidade.<br/>
+                    Explore as funcionalidades e aproveite ao máximo a experiência!
+                </p>
+                <div class="welcome-actions">
+                    <p:commandButton value="Meus Eventos" icon="pi pi-calendar" styleClass="p-button-primary" />
+                    <p:commandButton value="Perfil" icon="pi pi-user" styleClass="p-button-outlined" />
+                </div>
+            </div>
+        </div>
+    </div>
 </h:body>
 </html>

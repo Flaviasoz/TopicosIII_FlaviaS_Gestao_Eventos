@@ -30,31 +30,34 @@
                     </div>
                     <div class="col-12 lg:col-6 right-side ui-fluid">
                         <div class="col-12 container">
-                            <h3>Welcome guest!</h3>
-                            <h2>Sign in to Manhattan Network</h2>
+                            <h3>Bem-vindo visitante!</h3>
+                            <h2>Entre na Manhattan Network</h2>
                         </div>
                         <div class="col-12">
                             <div class="input-wrapper ui-input-icon-left">
                                 <i class="pi pi-user"/>
-                                <p:inputText id="email"  value="" 
+                                <p:inputText id="email"  
+                                             value="#{loginController.usuario.email}" 
                                              autocomplete="off" 
                                              required="true" requiredMessage="O Email é obrigatório!" 
                                              placeholder="E-mail"/>                        
-                               
                             </div>
                         </div>
                         <div class="col-12">
                             <div class="input-wrapper ui-input-icon-left">
                                 <i class="pi pi-lock"/>                                
-                                <p:password id="senha"  value="" 
-                                             autocomplete="off" 
-                                             required="true" requiredMessage="A senha é obrigatória!" 
-                                             placeholder="Senha"/>
-                                
+                                <p:password id="senha"  
+                                            value="#{loginController.usuario.senha}" 
+                                            autocomplete="off" 
+                                            required="true" requiredMessage="A senha é obrigatória!" 
+                                            placeholder="Senha"/>
                             </div>
                         </div>
                         <div class="col-12 button-container">                            
-                            <p:commandButton id="btnLogar" value="Acessar" update="@form" />
+                            <p:commandButton id="btnLogar" 
+                                             value="Acessar" 
+                                             update="@form" 
+                                             action="#{loginController.login(loginController.usuario.email, loginController.usuario.senha)}" />
                         </div>
                     </div>
                 </div>

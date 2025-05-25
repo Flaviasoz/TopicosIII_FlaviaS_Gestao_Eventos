@@ -1,3 +1,5 @@
 com\viniflavia\eventmanagement\entity\UsuarioEntity.class
+com\viniflavia\eventmanagement\controller\UsuarioController.class
 com\viniflavia\eventmanagement\JakartaRestConfiguration.class
 com\viniflavia\eventmanagement\resources\JakartaEE10Resource.class
+com\viniflavia\eventmanagement\controller\LoginController.class

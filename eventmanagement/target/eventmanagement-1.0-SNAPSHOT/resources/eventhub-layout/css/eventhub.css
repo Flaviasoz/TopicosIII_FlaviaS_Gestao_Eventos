@@ -1,0 +1,101 @@
+body {
+    font-family: "Source Sans Pro", "Helvetica Neue", sans-serif;
+    font-size: 14px;
+    background-color: #10151b;
+    color: #e0e6ed;
+}
+
+/* Fundo gradiente escuro */
+.login-background {
+    background: linear-gradient(120deg, #232b36 0%, #50637a 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+}
+
+/* Painel centralizado */
+.login-form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Card de login escuro */
+.login-card {
+    background-color: #181f27;
+    padding: 2.5rem;
+    border-radius: 14px;
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.35);
+    max-width: 400px;
+    width: 100%;
+    text-align: center;
+    border: 1px solid #232b36;
+}
+
+/* Logo e título */
+.logo-container .logo {
+    width: 120px;
+    margin-bottom: 1rem;
+    filter: brightness(0.9) contrast(1.1);
+}
+.logo-container h2 {
+    margin: 0;
+    color: #4fc3f7;
+    letter-spacing: 1px;
+    font-weight: 700;
+}
+.subtitle {
+    color: #a0aec0;
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+
+/* Campos */
+.field {
+    margin-bottom: 1.5rem;
+    text-align: left;
+}
+.field label {
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #b0bac9;
+    letter-spacing: 0.5px;
+}
+.ui-inputfield {
+    width: 100%;
+    background: #232b36;
+    color: #e0e6ed;
+    border: 1px solid #2c3642;
+    border-radius: 6px;
+    padding: 0.65rem 0.75rem;
+    font-size: 1rem;
+    transition: border 0.2s;
+}
+.ui-inputfield:focus {
+    border-color: #4fc3f7;
+    outline: none;
+    background: #232b36;
+}
+
+/* Botão */
+.login-button {
+    width: 100%;
+    background: linear-gradient(90deg, #1976d2 0%, #0d47a1 100%);
+    color: #e0e6ed;
+    border: none;
+    padding: 0.85rem;
+    font-size: 1.08rem;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    box-shadow: 0 2px 8px rgba(25, 118, 210, 0.15);
+    transition: background 0.3s, box-shadow 0.3s;
+}
+.login-button:hover {
+    background: linear-gradient(90deg, #1565c0 0%, #0b3557 100%);
+    box-shadow: 0 4px 16px rgba(25, 118, 210, 0.25);
+}

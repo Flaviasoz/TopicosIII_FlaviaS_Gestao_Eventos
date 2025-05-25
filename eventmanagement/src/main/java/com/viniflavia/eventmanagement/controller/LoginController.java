@@ -33,12 +33,12 @@ public class LoginController implements Serializable {
         return logado;
     }
 
-    public String login(String email, String senha) {
+    public String login() {
         try {
             TypedQuery<UsuarioEntity> query = em.createQuery(
                 "SELECT u FROM UsuarioEntity u WHERE u.email = :email AND u.senha = :senha", UsuarioEntity.class);
-            query.setParameter("email", email);
-            query.setParameter("senha", senha);
+            query.setParameter("email", usuario.getEmail());
+            query.setParameter("senha", usuario.getSenha());
 
             List<UsuarioEntity> usuarios = query.getResultList();
 

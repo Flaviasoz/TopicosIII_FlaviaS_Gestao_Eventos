@@ -1,0 +1,25 @@
+<ui:composition
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pm="http://primefaces.org/manhattan">
+
+    <div class="layout-sidebar">
+        <div class="layout-sidebar-logo">            
+            <a href="#" id="layout-sidebar-anchor" class="layout-sidebar-anchor" title="Toggle Menu">
+                <i class="pi"/>
+            </a>
+        </div>
+
+        <div class="layout-menu-container">
+            <h:form id="menuform">
+                <pm:menu widgetVar="ManhattanMenuWidget">
+                    <p:menuitem id="mnuPessoa" value="Pessoa" icon="pi pi-fw pi-home" outcome="index.xhtml"/>
+                </pm:menu>
+            </h:form>
+        </div>
+    </div>
+
+</ui:composition>

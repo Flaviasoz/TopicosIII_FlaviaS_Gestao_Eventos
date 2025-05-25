@@ -1,0 +1,62 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:f="http://java.sun.com/jsf/core"
+                xmlns:h="http://java.sun.com/jsf/html"
+                xmlns:ui="http://java.sun.com/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui">
+
+    <a tabindex="0" id="layout-config-button" class="layout-config-button">
+        <i class="pi pi-cog"/>
+    </a>
+
+    <div class="layout-config">
+        <h5>Menu Type</h5>
+        <h:form id="config-form">
+            <p:selectOneRadio value="#{guestPreferences.layoutMode}" layout="pageDirection" onchange="PrimeFaces.ManhattanConfigurator.changeMenuMode(event.target.value)">
+                <f:selectItem itemLabel="Static" itemValue="layout-static"/>
+                <f:selectItem itemLabel="Overlay" itemValue="layout-overlay"/>
+                <f:selectItem itemLabel="Horizontal" itemValue="layout-horizontal"/>
+                <f:selectItem itemLabel="Slim" itemValue="layout-slim"/>
+                <f:selectItem itemLabel="Toggle" itemValue="layout-toggle"/>
+                <p:ajax update="config-form" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Menu Color</h5>
+            <p:selectOneRadio value="#{guestPreferences.menuColor}" layout="pageDirection" onchange="PrimeFaces.ManhattanConfigurator.changeMenuColor(event.target.value)" >
+                <f:selectItem itemLabel="Light" itemValue="light"/>
+                <f:selectItem itemLabel="Dark" itemValue="dark"/>
+                <p:ajax update="config-form" />
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Input Style</h5>
+            <p:selectOneRadio value="#{guestPreferences.inputStyle}" layout="pageDirection"
+                              onchange="PrimeFaces.ManhattanConfigurator.updateInputStyle(event.target.value)">
+                <f:selectItem itemLabel="Outlined" itemValue="outlined"/>
+                <f:selectItem itemLabel="Filled" itemValue="filled"/>
+                <p:ajax/>
+            </p:selectOneRadio>
+
+            <hr/>
+
+            <h5>Themes</h5>
+            <div class="layout-themes">
+                <ui:repeat value="#{guestPreferences.themes}" var="theme">
+                    <div>
+                        <p:commandLink actionListener="#{guestPreferences.setTheme(theme.file)}"
+                                       style="background-color: #{theme.color}" title="#{theme.name}" process="@this"
+                                       onstart="PrimeFaces.ManhattanConfigurator.beforeResourceChange()"
+                                       update="config-form"
+                                       oncomplete="PrimeFaces.ManhattanConfigurator.changeScheme('#{theme.file}')">
+                            <ui:fragment rendered="#{theme.file eq guestPreferences.theme}">
+                                <i class="pi pi-check" style="color: #ffffff"/>
+                            </ui:fragment>
+                        </p:commandLink>
+                    </div>
+                </ui:repeat>
+            </div>
+        </h:form>
+    </div>
+</ui:composition>

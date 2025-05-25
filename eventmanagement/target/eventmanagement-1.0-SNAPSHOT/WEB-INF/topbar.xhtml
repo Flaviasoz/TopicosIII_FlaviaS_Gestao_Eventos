@@ -1,0 +1,141 @@
+<ui:composition 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:pa="http://primefaces.org/manhattan">
+
+    <div class="layout-topbar">
+        <a href="#" id="layout-menu-btn" class="menu-btn">
+            <i class="pi pi-bars"/>
+        </a>
+        
+        <div class="topbar-search">
+            <input type="text" class="ui-widget" />
+            <i class="pi pi-search"/>
+        </div>
+        
+        <div class="layout-topbar-menu-wrapper">            
+            <ul class="topbar-menu fadeInDown">
+                <li class="profile-item">
+                    <a href="#">                            
+                        <p:graphicImage name="images/avatar.png" library="manhattan-layout" />
+                        <span class="topbar-item-name profile-name">Madison Hughes</span>
+                    </a>
+                    
+                    <ul class="fadeInDown animated">
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-user"/>
+                                <span>Profile</span>
+                                <span class="topbar-badge">5</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-lock"/>
+                                <span>Privacy</span>
+                                <span class="topbar-badge">2</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-cog"/>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-sign-out"/>
+                                <span>Logout</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon swing pi pi-fw pi-envelope"/>
+                        <span class="topbar-badge rubberBand">5</span>
+                        <span class="topbar-item-name">Messages</span>
+                    </a>
+                    <ul class="fadeInDown animated">
+                        <li role="menuitem">
+                            <a href="#" class="topbar-message">
+                                <p:graphicImage name="images/avatar1.png" library="manhattan-layout" width="35"/>
+                                <span>Give me a call</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#" class="topbar-message">
+                                <p:graphicImage name="images/avatar2.png" library="manhattan-layout" width="35"/>
+                                <span>Reports attached</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#" class="topbar-message">
+                                <p:graphicImage name="images/avatar3.png" library="manhattan-layout" width="35"/>
+                                <span>About your invoice</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#" class="topbar-message">
+                                <p:graphicImage name="images/avatar2.png" library="manhattan-layout" width="35"/>
+                                <span>Meeting today</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#" class="topbar-message">
+                                <p:graphicImage name="images/avatar4.png" library="manhattan-layout" width="35"/>
+                                <span>Out of office</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="#">
+                        <i class="topbar-icon pi pi-fw pi-globe"/>
+                        <span class="topbar-badge rubberBand">2</span>
+                        <span class="topbar-item-name">Notifications</span>
+                    </a>
+                    <ul class="animated">
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-sliders-h"/>
+                                <span>Pending tasks</span>
+                                <span class="topbar-badge">6</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-calendar"/>
+                                <span>Meeting today</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-download"/>
+                                <span>Download</span>
+                            </a>
+                        </li>
+                        <li role="menuitem">
+                            <a href="#">
+                                <i class="pi pi-fw pi-ticket"/>
+                                <span>Book flight</span>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            
+            <a href="#" class="topbar-menu-btn">
+                <p:graphicImage name="images/avatar.png" library="manhattan-layout" />
+            </a>
+            
+            <a href="#" class="rightpanel-btn">
+                <i class="topbar-icon pi pi-fw pi-align-right"/>
+            </a>
+        </div>
+    </div>
+
+</ui:composition>

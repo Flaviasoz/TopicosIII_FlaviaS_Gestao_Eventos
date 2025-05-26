@@ -8,8 +8,12 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
+
 import java.io.Serializable;
 import java.util.List;
+
+import jakarta.servlet.http.HttpSession;
+import java.io.IOException;
 
 @Named(value = "loginController")
 @SessionScoped
@@ -45,6 +49,12 @@ public class LoginController implements Serializable {
             if (!usuarios.isEmpty()) {
                 usuario = usuarios.get(0);
                 logado = true;
+
+                // Criação de sessão manual
+                HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                        .getExternalContext().getSession(true);
+                session.setAttribute("usuarioLogado", usuario);
+
                 return "home?faces-redirect=true";
             } else {
                 logado = false;
@@ -61,8 +71,31 @@ public class LoginController implements Serializable {
     }
 
     public String logout() {
+        FacesContext facesContext = FacesContext.getCurrentInstance();
+        HttpSession session = (HttpSession) facesContext.getExternalContext().getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+
         usuario = new UsuarioEntity();
         logado = false;
+
         return "login?faces-redirect=true";
+    }
+
+    public boolean isSessaoAtiva() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        return session != null && session.getAttribute("usuarioLogado") != null;
+    }
+    
+    public void redirectIfNotLoggedIn() {
+        if (!isSessaoAtiva()) {
+            try {
+                FacesContext.getCurrentInstance().getExternalContext().redirect("login.xhtml");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }

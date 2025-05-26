@@ -109,14 +109,5 @@ O sistema permitirá a **criação, gestão e participação em eventos**, promo
 * **Descrição:** Após o evento, o usuário pode deixar uma nota ou comentário sobre sua experiência.
 
 
-| Categoria        | Cor            | Hex       | Uso recomendado                      |
-| ---------------- | -------------- | --------- | ------------------------------------ |
-| Primária         | Azul Royal     | `#2563EB` | Botões principais, links, destaques  |
-| Secundária       | Roxo Suave     | `#7C3AED` | Realces, ícones secundários          |
-| Fundo Claro      | Cinza Neve     | `#F9FAFB` | Fundo de páginas, cartões, listas    |
-| Fundo Escuro     | Cinza Noite    | `#1F2937` | Rodapé, cabeçalhos, modais escuros   |
-| Texto Principal  | Cinza Grafite  | `#111827` | Texto padrão                         |
-| Texto Secundário | Cinza Médio    | `#6B7280` | Subtítulos, legendas, textos menores |
-| Acento / Sucesso | Verde Menta    | `#10B981` | Mensagens de sucesso, confirmações   |
-| Erro / Alerta    | Vermelho Coral | `#EF4444` | Mensagens de erro, alertas           |
+![image](https://github.com/user-attachments/assets/1fa0c72a-4679-490f-86c3-a0151500c51f)
 

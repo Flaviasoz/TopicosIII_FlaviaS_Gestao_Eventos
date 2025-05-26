@@ -46,3 +46,28 @@ INSERT INTO eventos (titulo, descricao, data_inicio, data_fim, local, criado_por
 ('Intensivo: APIs REST com NestJS', 'Curso prático para dominar APIs modernas com NestJS.', '2025-11-20 09:00:00', '2025-11-22 18:00:00', 'Sala Backend Pro', 1),
 
 ('Feira Maker & Inovação', 'Exposição de projetos maker, protótipos e robótica educacional.', '2025-11-28 10:00:00', '2025-11-29 17:00:00', 'Pavilhão Criativo - ParqueTec', 1);
+
+
+
+select * from eventos;
+select * from notificacoes;
+
+DROP TRIGGER IF EXISTS trg_boas_vindas ON usuarios;
+DROP TRIGGER IF EXISTS trg_notificar_evento_novo ON eventos;
+DROP TRIGGER IF EXISTS trg_notificar_cancelamento_evento ON eventos;
+DROP TRIGGER IF EXISTS trg_notificar_inscricao_evento ON inscricoes;
+
+DROP FUNCTION IF EXISTS trigger_boas_vindas();
+DROP FUNCTION IF EXISTS notificar_evento_novo();
+DROP FUNCTION IF EXISTS notificar_cancelamento_evento();
+DROP FUNCTION IF EXISTS notificar_inscricao_evento();
+
+DROP TABLE IF EXISTS participantes;
+DROP TABLE IF EXISTS feedback;
+DROP TABLE IF EXISTS notificacoes;
+DROP TABLE IF EXISTS inscricoes;
+DROP TABLE IF EXISTS eventos;
+DROP TABLE IF EXISTS usuarios;
+
+DROP TYPE IF EXISTS nivel_usuario;
+commit;

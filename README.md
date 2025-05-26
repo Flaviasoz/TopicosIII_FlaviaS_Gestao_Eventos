@@ -108,3 +108,6 @@ O sistema permitirá a **criação, gestão e participação em eventos**, promo
 * **Ator:** Participante
 * **Descrição:** Após o evento, o usuário pode deixar uma nota ou comentário sobre sua experiência.
 
+
+![image](https://github.com/user-attachments/assets/1fa0c72a-4679-490f-86c3-a0151500c51f)
+

@@ -4,7 +4,7 @@ VALUES
   ('123.456.789-00', 'Administrador do Sistema', '999999@upf.br', '123', 'adm'),
   ('987.654.321-04', 'João da Silva', '123@upf.br', '123', 'cliente'),
   ('987.654.321-14', 'João da Silva', '1234@upf.br', '123', 'cliente');
-select * from usuarios
+
 -- Inserindo eventos
 INSERT INTO eventos (titulo, descricao, data_inicio, data_fim, local, criado_por)
 VALUES (

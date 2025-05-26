@@ -76,9 +76,9 @@ body {
     transition: border 0.2s;
 }
 .ui-inputfield:focus {
-    border-color: #4fc3f7;
+    border-color: #0d47a1;
     outline: none;
-    background: #232b36;
+    background: #e0e6ed;
 }
 
 /* Botão */

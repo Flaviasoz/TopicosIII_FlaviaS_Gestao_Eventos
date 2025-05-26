@@ -45,7 +45,7 @@ public class LoginController implements Serializable {
             if (!usuarios.isEmpty()) {
                 usuario = usuarios.get(0);
                 logado = true;
-                return "index?faces-redirect=true";
+                return "home?faces-redirect=true";
             } else {
                 logado = false;
                 FacesContext.getCurrentInstance().addMessage(null,

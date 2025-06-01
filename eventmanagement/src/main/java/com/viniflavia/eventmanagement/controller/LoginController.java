@@ -98,4 +98,20 @@ public class LoginController implements Serializable {
             }
         }
     }
+
+    public Long getUsuarioId() {
+        return usuario != null ? usuario.getCodigo().longValue() : null;
+    }
+
+    public boolean isAdmin() {
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
+                .getExternalContext().getSession(false);
+        if (session != null) {
+            UsuarioEntity usuarioLogado = (UsuarioEntity) session.getAttribute("usuarioLogado");
+            if (usuarioLogado != null && usuarioLogado.getNivel() != null) {
+                return usuarioLogado.getNivel().equalsIgnoreCase("adm");
+            }
+        }
+        return false;
+    }
 }

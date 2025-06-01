@@ -1,5 +1,11 @@
-C:\Users\198779\Desktop\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\resources\JakartaEE10Resource.java
-C:\Users\198779\Desktop\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\UsuarioController.java
-C:\Users\198779\Desktop\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\UsuarioEntity.java
-C:\Users\198779\Desktop\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\LoginController.java
-C:\Users\198779\Desktop\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\JakartaRestConfiguration.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\EventosEntity.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\JakartaRestConfiguration.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\LoginController.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\resources\JakartaEE10Resource.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\FeedbackEntity.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\InscricoesEntity.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\UsuarioController.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\NotificacoesEntity.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\EventosController.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\ParticipantesEntity.java
+E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\UsuarioEntity.java

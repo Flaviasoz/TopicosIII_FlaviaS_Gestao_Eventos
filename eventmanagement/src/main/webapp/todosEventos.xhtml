@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+    <h:head>
+        <f:facet name="first">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+            <meta name="theme-color" content="#6366F1" />
+        </f:facet>
+        <title>EventHub - Meus Eventos</title>
+
+        <h:outputStylesheet name="css/home.css" library="eventhub-layout" />
+        <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    </h:head>
+
+    <h:body class="p-component">
+
+        <div class="app-container">
+            <div class="section-header">
+                <h2 class="section-title">Todos os Eventos</h2>
+                <p:commandButton value="Criar Evento" 
+                                icon="pi pi-plus" 
+                                rendered="#{loginController.isAdmin}"
+                                action="#{eventoController.prepararNovoEvento}" 
+                                update="@form"
+                                oncomplete="PF('eventoDialog').show()" />
+            </div>
+            
+            <div class="events-grid">
+                <ui:repeat value="#{eventoController.todosEventos}" var="evento">
+                    <div class="event-card">
+                        <div class="event-date">
+                            <span class="day">#{evento.dataInicio.day}</span>
+                            <span class="month">#{evento.dataInicio.month}</span>
+                        </div>
+                        <div class="event-details">
+                            <h3>#{evento.titulo}</h3>
+                            <p><i class="pi pi-map-marker"></i> #{evento.local}</p>
+                            <p><i class="pi pi-clock"></i> 
+                                #{evento.dataInicio.hour}:#{evento.dataInicio.minute} - 
+                                #{evento.dataFim.hour}:#{evento.dataFim.minute}
+                            </p>
+                            <p:commandButton value="Inscrever-se" 
+                                            styleClass="p-button-outlined"
+                                            action="#{inscricaoController.inscrever(evento.id)}" />
+                        </div>
+                    </div>
+                </ui:repeat>
+            </div>
+        </div>
+    </h:body>
+</html>

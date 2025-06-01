@@ -2,7 +2,8 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
 
 <h:head>
     <f:facet name="first">
@@ -20,14 +21,12 @@
 </h:head>
 
 <h:body class="p-component">
-    <!-- Controle de sessão -->
     <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
 
     <h:form id="mainForm">
-        <!-- Navbar modern with subtle shadow -->
+        <!-- Navbar -->
         <p:menubar styleClass="app-navbar">
             <div class="navbar-container">
-                <!-- Left side - Logo and Main Menu -->
                 <div class="navbar-left">
                     <div class="app-logo">
                         <i class="pi pi-calendar" style="font-size: 1.5rem; color: #6366F1;"></i>
@@ -38,12 +37,8 @@
                     <p:menuitem value="Explorar" icon="pi pi-search" url="explorar.xhtml" styleClass="nav-item" />
                 </div>
                 
-                <!-- Right side - User Menu -->
                 <div class="navbar-right">
-                    <p:submenu 
-                        label="#{loginController.usuario.nome != null ? loginController.usuario.nome : 'Usuário'}" 
-                        icon="pi pi-user" 
-                        styleClass="user-menu">
+                    <p:submenu label="#{loginController.usuario.nome}" icon="pi pi-user" styleClass="user-menu">
                         <p:menuitem value="Meu Perfil" icon="pi pi-user-edit" url="perfil.xhtml" />
                         <p:menuitem value="Configurações" icon="pi pi-cog" url="configuracoes.xhtml" />
                         <p:menuitem value="Sair" icon="pi pi-sign-out" action="#{loginController.logout}" ajax="false" />
@@ -55,118 +50,292 @@
             </div>
         </p:menubar>
 
-        <!-- Main Content Area -->
-        <div class="app-container">
-            <!-- Hero Section -->
-            <div class="hero-section">
+        <!-- Conteúdo Principal -->
+        <div class="main-content-container">
+            <!-- Seção Hero -->
+            <section class="hero-section p-shadow-3">
                 <div class="hero-content">
-                    <h1 class="hero-title">Bem-vindo ao EventHub</h1>
-                    <p class="hero-subtitle">Conecte-se, compartilhe e participe dos melhores eventos</p>
+                    <div class="hero-text">
+                        <h1 class="hero-title">Bem-vindo ao EventHub</h1>
+                        <p class="hero-subtitle">Conecte-se, compartilhe e participe dos melhores eventos</p>
+                        
+                        <div class="hero-actions">
+                            <p:commandButton value="Explorar Eventos" 
+                                           icon="pi pi-search" 
+                                           styleClass="p-button-primary p-button-lg"
+                                           action="explorar.xhtml?faces-redirect=true" />
+                                           
+                            <h:panelGroup rendered="#{loginController.isAdmin()}">
+                                <p:commandButton value="Criar Evento" 
+                                               icon="pi pi-plus" 
+                                               styleClass="p-button-outlined p-button-lg"
+                                               action="#{eventoController.prepararNovoEvento}" 
+                                               update="@form"
+                                               oncomplete="PF('eventoDialog').show()" />
+                            </h:panelGroup>
+                        </div>
+                    </div>
                     
-                    <div class="hero-actions">
-                        <p:commandButton value="Criar Evento" icon="pi pi-plus" styleClass="p-button-primary hero-btn" />
-                        <p:commandButton value="Explorar Eventos" icon="pi pi-search" styleClass="p-button-outlined hero-btn" />
+                    <div class="hero-image-container">
+                        <div class="hero-image-placeholder">
+                            <i class="pi pi-calendar" style="font-size: 3rem; color: #6366F1;"></i>
+                        </div>
                     </div>
                 </div>
-                <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1511578314322-379afb476865?ixlib=rb-1.2.1&amp;auto=format&amp;fit=crop&amp;w=1350&amp;q=80" alt="Pessoas em evento" />
-                </div>
-            </div>
+            </section>
 
-            <!-- Features Section -->
-            <div class="features-section">
-                <h2 class="section-title">Por que usar o EventHub?</h2>
-                <p class="section-subtitle">Tudo que você precisa para gerenciar seus eventos em um só lugar</p>
+            <!-- Seção de Recursos -->
+            <section class="features-section">
+                <div class="section-header">
+                    <h2 class="section-title">Por que usar o EventHub?</h2>
+                    <p class="section-description">Tudo que você precisa para gerenciar seus eventos em um só lugar</p>
+                </div>
                 
                 <div class="features-grid">
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="pi pi-calendar-plus" style="font-size: 2rem; color: #6366F1;"></i>
+                    <div class="feature-card p-shadow-2">
+                        <div class="feature-icon-container">
+                            <i class="pi pi-calendar-plus feature-icon"></i>
                         </div>
-                        <h3>Crie Eventos Facilmente</h3>
-                        <p>Interface intuitiva para criar e gerenciar seus eventos em minutos.</p>
+                        <h3 class="feature-title">Crie Eventos Facilmente</h3>
+                        <p class="feature-description">Interface intuitiva para criar e gerenciar seus eventos em minutos.</p>
                     </div>
                     
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="pi pi-users" style="font-size: 2rem; color: #6366F1;"></i>
+                    <div class="feature-card p-shadow-2">
+                        <div class="feature-icon-container">
+                            <i class="pi pi-users feature-icon"></i>
                         </div>
-                        <h3>Convide Participantes</h3>
-                        <p>Compartilhe seus eventos e acompanhe as confirmações.</p>
+                        <h3 class="feature-title">Convide Participantes</h3>
+                        <p class="feature-description">Compartilhe seus eventos e acompanhe as confirmações.</p>
                     </div>
                     
-                    <div class="feature-card">
-                        <div class="feature-icon">
-                            <i class="pi pi-bell" style="font-size: 2rem; color: #6366F1;"></i>
+                    <div class="feature-card p-shadow-2">
+                        <div class="feature-icon-container">
+                            <i class="pi pi-bell feature-icon"></i>
                         </div>
-                        <h3>Notificações em Tempo Real</h3>
-                        <p>Receba atualizações sobre seus eventos e participantes.</p>
+                        <h3 class="feature-title">Notificações em Tempo Real</h3>
+                        <p class="feature-description">Receba atualizações sobre seus eventos e participantes.</p>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            <!-- Upcoming Events -->
-            <div class="events-section">
+            <!-- Seção de Eventos do Usuário -->
+            <section class="user-events-section">
                 <div class="section-header">
                     <h2 class="section-title">Seus Próximos Eventos</h2>
-                    <p:commandButton value="Ver Todos" icon="pi pi-arrow-right" styleClass="p-button-text" />
+                    <p:commandButton value="Ver Todos" 
+                                   icon="pi pi-arrow-right" 
+                                   styleClass="p-button-text" 
+                                   action="meusEventos.xhtml?faces-redirect=true" />
                 </div>
                 
                 <div class="events-grid">
-                    <!-- Event cards would be dynamically generated here -->
-                    <div class="event-card">
-                        <div class="event-date">
-                            <span class="day">15</span>
-                            <span class="month">JUN</span>
+                    <ui:repeat value="#{eventoController.listarEventosPorUsuario(loginController.usuario.codigo)}" var="evento">
+                        <div class="event-card p-shadow-2">
+                            <div class="event-date-badge">
+                                <span class="event-day">
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="dd" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </span>
+                                <span class="event-month">
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="MMM" locale="pt_BR" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </span>
+                            </div>
+                            <div class="event-details">
+                                <h3 class="event-title"><h:outputText value="#{evento.titulo}" /></h3>
+                                <p class="event-location"><i class="pi pi-map-marker"></i> <h:outputText value="#{evento.local}" /></p>
+                                <p class="event-time">
+                                    <i class="pi pi-clock"></i>
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="HH:mm" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                    -
+                                    <h:outputText value="#{evento.dataFim}">
+                                        <f:convertDateTime pattern="HH:mm" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </p>
+                            </div>
+                            <div class="event-actions">
+                                <p:commandButton icon="pi pi-ellipsis-v" 
+                                               styleClass="p-button-rounded p-button-text"
+                                               action="#{eventoController.detalhesEvento(evento)}"
+                                               oncomplete="PF('detalhesDialog').show()" />
+                            </div>
                         </div>
-                        <div class="event-details">
-                            <h3>Workshop de UX Design</h3>
-                            <p><i class="pi pi-map-marker"></i> Auditório Principal</p>
-                            <p><i class="pi pi-clock"></i> 14:00 - 17:00</p>
-                        </div>
-                        <p:commandButton icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text event-menu" />
-                    </div>
+                    </ui:repeat>
                     
-                    <div class="event-card">
-                        <div class="event-date">
-                            <span class="day">22</span>
-                            <span class="month">JUN</span>
-                        </div>
-                        <div class="event-details">
-                            <h3>Meetup de Desenvolvedores</h3>
-                            <p><i class="pi pi-map-marker"></i> Sala de Conferências</p>
-                            <p><i class="pi pi-clock"></i> 18:00 - 21:00</p>
-                        </div>
-                        <p:commandButton icon="pi pi-ellipsis-v" styleClass="p-button-rounded p-button-text event-menu" />
+                    <div class="no-events-message" rendered="#{empty eventoController.listarEventosPorUsuario(loginController.usuario.codigo)}">
+                        <i class="pi pi-calendar no-events-icon"></i>
+                        <p class="no-events-text">Você ainda não tem eventos agendados</p>
+                        <p:commandButton value="Explorar Eventos" 
+                                       icon="pi pi-search" 
+                                       styleClass="p-button-outlined"
+                                       action="explorar.xhtml?faces-redirect=true" />
                     </div>
                 </div>
-            </div>
+            </section>
+            
+            <!-- Seção de Todos os Eventos -->
+            <section class="all-events-section">
+                <div class="section-header">
+                    <h2 class="section-title">Descubra Eventos</h2>
+                    <p:commandButton value="Ver Todos" 
+                                   icon="pi pi-arrow-right" 
+                                   styleClass="p-button-text" 
+                                   action="explorar.xhtml?faces-redirect=true" />
+                </div>
+                
+                <div class="events-grid">
+                    <ui:repeat value="#{eventoController.listarProximosEventos(3)}" var="evento">
+                        <div class="event-card p-shadow-2">
+                            <div class="event-date-badge">
+                                <span class="event-day">
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="dd" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </span>
+                                <span class="event-month">
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="MMM" locale="pt_BR" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </span>
+                            </div>
+                            <div class="event-details">
+                                <h3 class="event-title"><h:outputText value="#{evento.titulo}" /></h3>
+                                <p class="event-location"><i class="pi pi-map-marker"></i> <h:outputText value="#{evento.local}" /></p>
+                                <p class="event-time">
+                                    <i class="pi pi-clock"></i>
+                                    <h:outputText value="#{evento.dataInicio}">
+                                        <f:convertDateTime pattern="HH:mm" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                    -
+                                    <h:outputText value="#{evento.dataFim}">
+                                        <f:convertDateTime pattern="HH:mm" timeZone="GMT-3"/>
+                                    </h:outputText>
+                                </p>
+                            </div>
+                            <div class="event-actions">
+                                <p:commandButton value="Detalhes" 
+                                               styleClass="p-button-outlined p-button-sm"
+                                               action="#{eventoController.detalhesEvento(evento)}"
+                                               oncomplete="PF('detalhesDialog').show()" />
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </div>
+            </section>
         </div>
 
-        <!-- App Footer -->
-        <div class="app-footer">
+        <!-- Diálogos -->
+        <p:dialog header="Criar Evento" widgetVar="eventoDialog" modal="true" resizable="false" styleClass="form-dialog">
+            <h:panelGrid columns="2" cellpadding="5" style="width: 100%">
+                <p:outputLabel for="titulo" value="Título:" />
+                <p:inputText id="titulo" value="#{eventoController.eventoSelecionado.titulo}" required="true" style="width: 100%" />
+                
+                <p:outputLabel for="descricao" value="Descrição:" />
+                <p:inputTextarea id="descricao" value="#{eventoController.eventoSelecionado.descricao}" rows="5" style="width: 100%" />
+                
+                <p:outputLabel for="dataInicio" value="Data Início:" />
+                <p:calendar id="dataInicio" value="#{eventoController.eventoSelecionado.dataInicio}" 
+                           pattern="dd/MM/yyyy HH:mm" timeZone="GMT-3" style="width: 100%" />
+                
+                <p:outputLabel for="dataFim" value="Data Fim:" />
+                <p:calendar id="dataFim" value="#{eventoController.eventoSelecionado.dataFim}" 
+                           pattern="dd/MM/yyyy HH:mm" timeZone="GMT-3" style="width: 100%" />
+                
+                <p:outputLabel for="local" value="Local:" />
+                <p:inputText id="local" value="#{eventoController.eventoSelecionado.local}" style="width: 100%" />
+            </h:panelGrid>
+            
+            <f:facet name="footer">
+                <div class="dialog-footer">
+                    <p:commandButton value="Salvar" 
+                                   styleClass="p-button-primary"
+                                   action="#{eventoController.salvarEvento}" 
+                                   update="@form"
+                                   oncomplete="PF('eventoDialog').hide()" />
+                    <p:commandButton value="Cancelar" 
+                                   styleClass="p-button-secondary"
+                                   onclick="PF('eventoDialog').hide()" 
+                                   immediate="true" />
+                </div>
+            </f:facet>
+        </p:dialog>
+        
+        <p:dialog header="Detalhes do Evento" widgetVar="detalhesDialog" modal="true" width="60%" styleClass="details-dialog">
+            <div class="event-details-container" rendered="#{not empty eventoController.eventoSelecionado}">
+                <div class="event-details-header">
+                    <h2>#{eventoController.eventoSelecionado.titulo}</h2>
+                    <div class="event-meta-info">
+                        <span class="event-meta-item">
+                            <i class="pi pi-calendar"></i> 
+                            <h:outputText value="#{eventoController.eventoSelecionado.dataInicio}">
+                                <f:convertDateTime pattern="dd/MM/yyyy HH:mm" timeZone="GMT-3"/>
+                            </h:outputText>
+                        </span>
+                        <span class="event-meta-item">
+                            <i class="pi pi-map-marker"></i> #{eventoController.eventoSelecionado.local}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="event-details-content">
+                    <h3>Descrição</h3>
+                    <p class="event-description">#{eventoController.eventoSelecionado.descricao}</p>
+                    
+                    <div class="event-details-actions">
+                        <p:commandButton value="Participar" 
+                                       styleClass="p-button-primary"
+                                       action="#{inscricaoController.inscrever(eventoController.eventoSelecionado.id)}"
+                                       rendered="#{!inscricaoController.isInscrito(eventoController.eventoSelecionado.id)}" />
+                                       
+                        <p:commandButton value="Já Inscrito" 
+                                       styleClass="p-button-success"
+                                       rendered="#{inscricaoController.isInscrito(eventoController.eventoSelecionado.id)}"
+                                       disabled="true" />
+                    </div>
+                </div>
+            </div>
+        </p:dialog>
+
+        <!-- Rodapé -->
+        <footer class="app-footer">
             <div class="footer-content">
-                <div class="footer-brand">
-                    <i class="pi pi-calendar" style="font-size: 1.5rem; color: white;"></i>
-                    <span>EventHub</span>
+                <div class="footer-brand-section">
+                    <div class="footer-brand">
+                        <i class="pi pi-calendar footer-logo"></i>
+                        <span class="footer-brand-name">EventHub</span>
+                    </div>
+                    <p class="footer-description">Sua plataforma completa para gerenciamento de eventos</p>
                 </div>
-                <div class="footer-links">
-                    <a href="#">Sobre</a>
-                    <a href="#">Termos</a>
-                    <a href="#">Privacidade</a>
-                    <a href="#">Contato</a>
+                
+                <div class="footer-links-section">
+                    <h4 class="footer-links-title">Links Úteis</h4>
+                    <ul class="footer-links-list">
+                        <li><a href="#" class="footer-link">Sobre</a></li>
+                        <li><a href="#" class="footer-link">Termos</a></li>
+                        <li><a href="#" class="footer-link">Privacidade</a></li>
+                        <li><a href="#" class="footer-link">Contato</a></li>
+                    </ul>
                 </div>
-                <div class="footer-social">
-                    <i class="pi pi-facebook"></i>
-                    <i class="pi pi-twitter"></i>
-                    <i class="pi pi-instagram"></i>
-                    <i class="pi pi-linkedin"></i>
+                
+                <div class="footer-social-section">
+                    <h4 class="footer-social-title">Redes Sociais</h4>
+                    <div class="footer-social-icons">
+                        <a href="#" class="social-icon"><i class="pi pi-facebook"></i></a>
+                        <a href="#" class="social-icon"><i class="pi pi-twitter"></i></a>
+                        <a href="#" class="social-icon"><i class="pi pi-instagram"></i></a>
+                        <a href="#" class="social-icon"><i class="pi pi-linkedin"></i></a>
+                    </div>
                 </div>
             </div>
+            
             <div class="footer-copyright">
-                © 2023 EventHub. Todos os direitos reservados.
+                <p>© 2025 EventHub. Todos os direitos reservados.</p>
             </div>
-        </div>
+        </footer>
     </h:form>
 </h:body>
 </html>

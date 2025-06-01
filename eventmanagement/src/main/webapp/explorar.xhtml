@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+<h:head>
+    <title>EventHub - Explorar Eventos</title>
+    <h:outputStylesheet name="css/explorar.css" library="eventhub-layout" />
+</h:head>
+
+<h:body class="p-component">
+    <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
+    
+    <h:form id="explorarForm">
+        <!-- Barra de pesquisa e filtros -->
+        <div class="explore-header p-shadow-2">
+            <div class="search-container">
+                <p:inputText placeholder="Buscar eventos..." styleClass="search-input"
+                             value="#{explorarController.termoBusca}">
+                    <p:ajax event="keyup" update="eventosGrid" delay="300" />
+                </p:inputText>
+                <p:commandButton icon="pi pi-search" styleClass="search-button" />
+            </div>
+            
+            <div class="filter-container">
+                <p:selectOneMenu value="#{explorarController.filtroCategoria}" styleClass="filter-select">
+                    <f:selectItem itemLabel="Todas Categorias" itemValue="" />
+                    <f:selectItems value="#{explorarController.categorias}" />
+                    <p:ajax update="eventosGrid" />
+                </p:selectOneMenu>
+                
+                <p:selectOneMenu value="#{explorarController.filtroData}" styleClass="filter-select">
+                    <f:selectItem itemLabel="Qualquer Data" itemValue="" />
+                    <f:selectItem itemLabel="Hoje" itemValue="hoje" />
+                    <f:selectItem itemLabel="Esta Semana" itemValue="semana" />
+                    <f:selectItem itemLabel="Este Mês" itemValue="mes" />
+                    <p:ajax update="eventosGrid" />
+                </p:selectOneMenu>
+                
+                <p:selectOneMenu value="#{explorarController.filtroLocal}" styleClass="filter-select">
+                    <f:selectItem itemLabel="Qualquer Local" itemValue="" />
+                    <f:selectItems value="#{explorarController.locais}" />
+                    <p:ajax update="eventosGrid" />
+                </p:selectOneMenu>
+                
+                <div class="layout-toggle">
+                    <p:commandButton icon="pi pi-th-large" 
+                                     styleClass="#{explorarController.layout eq 'grid' ? 'active' : ''}"
+                                     action="#{explorarController.setLayout('grid')}" 
+                                     update="explorarForm" />
+                    <p:commandButton icon="pi pi-bars" 
+                                     styleClass="#{explorarController.layout eq 'lista' ? 'active' : ''}"
+                                     action="#{explorarController.setLayout('lista')}" 
+                                     update="explorarForm" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Resultados -->
+        <div class="explore-results">
+            <h:panelGroup id="eventosGrid">
+                <p:outputPanel rendered="#{explorarController.layout eq 'grid'}">
+                    <div class="events-grid">
+                        <ui:repeat value="#{explorarController.eventosFiltrados}" var="evento">
+                            <div class="event-card">
+                                <div class="event-image-placeholder">
+                                    <i class="pi pi-calendar" style="font-size: 2rem;"></i>
+                                    <div class="event-date">
+                                        <span class="day">#{evento.dataInicio.day}</span>
+                                        <span class="month">#{evento.dataInicio.month}</span>
+                                    </div>
+                                </div>
+                                <div class="event-details">
+                                    <h3>#{evento.titulo}</h3>
+                                    <p class="event-category">#{evento.categoria}</p>
+                                    <p><i class="pi pi-map-marker"></i> #{evento.local}</p>
+                                    <p><i class="pi pi-clock"></i> 
+                                        #{evento.dataInicio.hour}:#{evento.dataInicio.minute} - 
+                                        #{evento.dataFim.hour}:#{evento.dataFim.minute}
+                                    </p>
+                                    <div class="event-actions">
+                                        <p:commandButton value="Detalhes" 
+                                                       styleClass="p-button-outlined"
+                                                       action="#{explorarController.detalhesEvento(evento)}" />
+                                        <p:commandButton value="Inscrever-se" 
+                                                       styleClass="p-button-primary"
+                                                       rendered="#{!explorarController.isInscrito(evento.id)}"
+                                                       action="#{inscricaoController.inscrever(evento.id)}" />
+                                        <p:commandButton value="Inscrito" 
+                                                       styleClass="p-button-success"
+                                                       rendered="#{explorarController.isInscrito(evento.id)}"
+                                                       disabled="true" />
+                                    </div>
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </p:outputPanel>
+
+                <p:outputPanel rendered="#{explorarController.layout eq 'lista'}">
+                    <div class="events-list">
+                        <div class="list-header">
+                            <span class="header-title">Evento</span>
+                            <span class="header-date">Data</span>
+                            <span class="header-location">Local</span>
+                            <span class="header-actions">Ações</span>
+                        </div>
+                        <ui:repeat value="#{explorarController.eventosFiltrados}" var="evento">
+                            <div class="list-item">
+                                <div class="item-main">
+                                    <div class="item-title">
+                                        <h4>#{evento.titulo}</h4>
+                                        <span class="item-category">#{evento.categoria}</span>
+                                    </div>
+                                    <div class="item-date">
+                                        <span class="date-day">#{evento.dataInicio.day}</span>
+                                        <span class="date-month">#{evento.dataInicio.month}</span>
+                                        <span class="date-time">#{evento.dataInicio.hour}:#{evento.dataInicio.minute}</span>
+                                    </div>
+                                    <div class="item-location">
+                                        <i class="pi pi-map-marker"></i> #{evento.local}
+                                    </div>
+                                </div>
+                                <div class="item-actions">
+                                    <p:commandButton value="Detalhes" 
+                                                   styleClass="p-button-outlined p-button-sm"
+                                                   action="#{explorarController.detalhesEvento(evento)}" />
+                                    <p:commandButton value="#{explorarController.isInscrito(evento.id) ? 'Inscrito' : 'Inscrever'}" 
+                                                   styleClass="#{explorarController.isInscrito(evento.id) ? 'p-button-success' : 'p-button-primary'} p-button-sm"
+                                                   action="#{explorarController.isInscrito(evento.id) ? null : inscricaoController.inscrever(evento.id)}" />
+                                </div>
+                            </div>
+                        </ui:repeat>
+                    </div>
+                </p:outputPanel>
+
+                <div class="no-results" rendered="#{empty explorarController.eventosFiltrados}">
+                    <i class="pi pi-search" style="font-size: 2rem;"></i>
+                    <h3>Nenhum evento encontrado</h3>
+                    <p>Tente ajustar seus filtros de busca</p>
+                </div>
+            </h:panelGroup>
+        </div>
+
+        <!-- Dialog de Detalhes -->
+        <p:dialog header="Detalhes do Evento" widgetVar="detalhesDialog" modal="true" width="80%" height="auto">
+            <div class="event-detail" rendered="#{not empty explorarController.eventoSelecionado}">
+                <div class="detail-header">
+                    <h2>#{explorarController.eventoSelecionado.titulo}</h2>
+                    <div class="detail-meta">
+                        <span><i class="pi pi-calendar"></i> #{explorarController.eventoSelecionado.dataInicio} - #{explorarController.eventoSelecionado.dataFim}</span>
+                        <span><i class="pi pi-map-marker"></i> #{explorarController.eventoSelecionado.local}</span>
+                        <span><i class="pi pi-tag"></i> #{explorarController.eventoSelecionado.categoria}</span>
+                    </div>
+                </div>
+                
+                <div class="detail-content">
+                    <div class="detail-description">
+                        <h3>Descrição</h3>
+                        <p>#{explorarController.eventoSelecionado.descricao}</p>
+                        
+                        <h3>Organizador</h3>
+                        <div class="organizer">
+                            <div class="organizer-avatar-placeholder">
+                                <i class="pi pi-user" style="font-size: 1.5rem;"></i>
+                            </div>
+                            <span>#{explorarController.eventoSelecionado.organizadorNome}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="detail-sidebar">
+                        <div class="detail-card">
+                            <h4>Informações</h4>
+                            <p><strong>Data:</strong> #{explorarController.eventoSelecionado.dataInicio}</p>
+                            <p><strong>Local:</strong> #{explorarController.eventoSelecionado.local}</p>
+                            <p><strong>Preço:</strong> #{explorarController.eventoSelecionado.preco != null ? explorarController.eventoSelecionado.preco : 'Gratuito'}</p>
+                            <p><strong>Vagas:</strong> #{explorarController.eventoSelecionado.vagasDisponiveis} disponíveis</p>
+                            
+                            <p:commandButton value="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) ? 'Cancelar Inscrição' : 'Inscrever-se'}" 
+                                           styleClass="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) ? 'p-button-outlined' : 'p-button-primary'}"
+                                           action="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) ? inscricaoController.cancelarInscricao(explorarController.eventoSelecionado.id) : inscricaoController.inscrever(explorarController.eventoSelecionado.id)}" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </p:dialog>
+    </h:form>
+</h:body>
+</html>

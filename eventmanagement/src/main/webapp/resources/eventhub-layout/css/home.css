@@ -86,6 +86,8 @@ body, html {
     display: flex;
     align-items: center;
     gap: 1rem;
+    margin-left: auto;
+    padding-right: 0;
 }
 
 .user-menu .ui-menuitem-link {
@@ -103,6 +105,8 @@ body, html {
     justify-content: center;
     color: white;
     cursor: pointer;
+    margin-left: 0.5rem;
+    flex-shrink: 0;
 }
 
 /* Seção Hero */
@@ -506,6 +510,10 @@ body, html {
     .hero-image-container {
         order: -1;
     }
+    
+    .navbar-container {
+        padding: 0 1rem;
+    }
 }
 
 @media (max-width: 768px) {
@@ -541,11 +549,51 @@ body, html {
     .navbar-left {
         gap: 1rem;
     }
+    
+    .navbar-right {
+        gap: 0.5rem;
+    }
+    
+    .user-avatar {
+        width: 35px;
+        height: 35px;
+        margin-left: 0.25rem;
+    }
+    
+    .user-avatar i {
+        font-size: 1rem !important;
+    }
 }
 
 @media (max-width: 480px) {
     .app-navbar {
         padding: 0.5rem 1rem !important;
+    }
+    
+    .navbar-container {
+        padding: 0 0.5rem;
+    }
+    
+    .navbar-left {
+        gap: 0.5rem;
+    }
+    
+    .app-logo span {
+        display: none;
+    }
+    
+    .navbar-right {
+        gap: 0.25rem;
+    }
+    
+    .user-avatar {
+        width: 32px;
+        height: 32px;
+        margin-left: 0.125rem;
+    }
+    
+    .user-avatar i {
+        font-size: 0.875rem !important;
     }
     
     .event-card {

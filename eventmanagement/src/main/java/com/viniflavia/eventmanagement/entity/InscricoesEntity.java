@@ -1,11 +1,25 @@
 package com.viniflavia.eventmanagement.entity;
 
+import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class InscricoesEntity {
+@Entity
+@Table(name = "inscricoes")
+public class InscricoesEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "usuario_id", nullable = false)
     private Integer usuarioId;
+
+    @Column(name = "evento_id", nullable = false)
     private Integer eventoId;
+
+    @Column(name = "data_inscricao")
     private LocalDateTime dataInscricao;
 
     public InscricoesEntity() {

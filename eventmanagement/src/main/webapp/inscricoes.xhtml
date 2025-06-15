@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+        <meta name="theme-color" content="#6366F1" />
+    </f:facet>
+    <title>Gerenciar Inscrições - EventHub</title>
+
+    <h:outputStylesheet name="css/home.css" library="eventhub-layout" />
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+</h:head>
+
+<h:body class="p-component">
+    <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
+
+    <h:form id="mainForm">
+        <!-- Navbar Componente -->
+        <ui:include src="/WEB-INF/navbar.xhtml">
+            <ui:param name="activePage" value="inscricoes" />
+        </ui:include>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content-container">
+            <div class="content-header">
+                <h1 class="page-title">
+                    <i class="pi pi-ticket"></i>
+                    Gerenciar Inscrições
+                </h1>
+                <p class="page-description">Gerencie todas as inscrições em eventos</p>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <p:commandButton value="Nova Inscrição" 
+                               icon="pi pi-plus" 
+                               styleClass="p-button-primary"
+                               action="#{inscricoesController.prepararNovaInscricao}"
+                               update=":mainForm:usuarioId :mainForm:eventoId"
+                               oncomplete="PF('inscricaoDialog').show()" />
+            </div>
+
+            <!-- Tabela de Inscrições -->
+            <div class="data-table-container">
+                <p:dataTable value="#{inscricoesController.listarTodasInscricoes()}" 
+                           var="inscricao" 
+                           styleClass="p-datatable-striped p-datatable-gridlines"
+                           paginator="true" 
+                           rows="10"
+                           paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                           rowsPerPageTemplate="5,10,20,50">
+                    
+                    <p:column headerText="ID" width="60">
+                        <h:outputText value="#{inscricao.id}" />
+                    </p:column>
+                    
+                    <p:column headerText="Usuário" width="200">
+                        <h:outputText value="#{inscricoesController.getNomeUsuario(inscricao.usuarioId)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Evento" width="200">
+                        <h:outputText value="#{inscricoesController.getNomeEvento(inscricao.eventoId)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Data Inscrição" width="150">
+                        <h:outputText value="#{inscricoesController.formatarDataInscricao(inscricao.dataInscricao)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Ações" width="200" styleClass="actions-column">
+                        <div class="action-buttons-cell">
+                            <p:commandButton icon="pi pi-eye" 
+                                           styleClass="p-button-rounded p-button-text p-button-sm"
+                                           title="Ver Detalhes"
+                                           action="#{inscricoesController.detalhesInscricao(inscricao)}"
+                                           update="@form"
+                                           oncomplete="PF('detalhesDialog').show()" />
+                            
+                            <p:commandButton icon="pi pi-pencil" 
+                                           styleClass="p-button-rounded p-button-text p-button-sm"
+                                           title="Editar"
+                                           action="#{inscricoesController.prepararEditarInscricao(inscricao)}"
+                                           update=":mainForm:usuarioId :mainForm:eventoId"
+                                           oncomplete="PF('inscricaoDialog').show()" />
+                            
+                            <p:commandButton icon="pi pi-trash" 
+                                           styleClass="p-button-rounded p-button-text p-button-danger p-button-sm"
+                                           title="Excluir"
+                                           action="#{inscricoesController.cancelarInscricao(inscricao)}"
+                                           update="@form"
+                                           onclick="return confirm('Tem certeza que deseja cancelar esta inscrição?')" />
+                        </div>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+        <!-- Dialog para Criar/Editar Inscrição -->
+        <p:dialog header="#{inscricoesController.modoEdicao ? 'Editar Inscrição' : 'Nova Inscrição'}" 
+                 widgetVar="inscricaoDialog" 
+                 modal="true" 
+                 showEffect="fade" 
+                 hideEffect="fade"
+                 styleClass="dialog-form">
+            
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="usuarioId">Usuário:</label>
+                        <p:selectOneMenu id="usuarioId" value="#{inscricoesController.inscricao.usuarioId}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione um usuário..." itemValue="" />
+                            <f:selectItems value="#{inscricoesController.listaUsuarios}" 
+                                         var="usuario" 
+                                         itemLabel="#{usuario.nome} (#{usuario.email})" 
+                                         itemValue="#{usuario.codigo}" />
+                        </p:selectOneMenu>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="eventoId">Evento:</label>
+                        <p:selectOneMenu id="eventoId" value="#{inscricoesController.inscricao.eventoId}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione um evento..." itemValue="" />
+                            <f:selectItems value="#{inscricoesController.listaEventos}" 
+                                         var="evento" 
+                                         itemLabel="#{evento.titulo} - #{evento.local}" 
+                                         itemValue="#{evento.id}" />
+                        </p:selectOneMenu>
+                    </div>
+                </div>
+            </div>
+            
+            <f:facet name="footer">
+                <div class="dialog-footer">
+                    <p:commandButton value="Salvar" 
+                                   icon="pi pi-check" 
+                                   styleClass="p-button-primary"
+                                   action="#{inscricoesController.salvarInscricao}"
+                                   update="@form"
+                                   oncomplete="if (!args.validationFailed) {PF('inscricaoDialog').hide()}" />
+                    
+                    <p:commandButton value="Cancelar" 
+                                   icon="pi pi-times" 
+                                   styleClass="p-button-secondary"
+                                   onclick="PF('inscricaoDialog').hide()" />
+                </div>
+            </f:facet>
+        </p:dialog>
+
+        <!-- Dialog de Detalhes -->
+        <p:dialog header="Detalhes da Inscrição" 
+                 widgetVar="detalhesDialog" 
+                 modal="true" 
+                 showEffect="fade" 
+                 hideEffect="fade"
+                 styleClass="dialog-details">
+            
+            <div class="details-container">
+                <div class="detail-row">
+                    <span class="detail-label">ID:</span>
+                    <span class="detail-value">#{inscricoesController.inscricaoSelecionada.id}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Usuário:</span>
+                    <span class="detail-value">#{inscricoesController.getNomeUsuario(inscricoesController.inscricaoSelecionada.usuarioId)}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Evento:</span>
+                    <span class="detail-value">#{inscricoesController.getNomeEvento(inscricoesController.inscricaoSelecionada.eventoId)}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Data de Inscrição:</span>
+                    <span class="detail-value">
+                        #{inscricoesController.formatarDataInscricao(inscricoesController.inscricaoSelecionada.dataInscricao)}
+                    </span>
+                </div>
+            </div>
+            
+            <f:facet name="footer">
+                <div class="dialog-footer">
+                    <p:commandButton value="Fechar" 
+                                   icon="pi pi-times" 
+                                   styleClass="p-button-secondary"
+                                   onclick="PF('detalhesDialog').hide()" />
+                </div>
+            </f:facet>
+        </p:dialog>
+
+        <!-- Mensagens -->
+        <p:growl id="messages" showDetail="true" life="3000" />
+    </h:form>
+
+    <style>
+        .action-buttons-cell {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+            align-items: center;
+            min-height: 40px;
+        }
+        
+        .actions-column {
+            text-align: center;
+        }
+        
+        .dialog-form {
+            width: 500px;
+        }
+        
+        .dialog-details {
+            width: 400px;
+        }
+        
+        .form-container {
+            padding: 1rem 0;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-control {
+            width: 100%;
+        }
+        
+        /* Estilo para os selects */
+        .ui-selectonemenu {
+            width: 100%;
+        }
+        
+        .ui-selectonemenu-label {
+            padding: 0.5rem;
+        }
+        
+        .details-container {
+            padding: 1rem 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            width: 120px;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #6b7280;
+        }
+        
+        .dialog-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        /* Garantir que os botões sejam visíveis */
+        .p-button-sm {
+            min-width: 32px;
+            height: 32px;
+        }
+        
+        /* Melhorar a visibilidade dos ícones */
+        .p-button .pi {
+            font-size: 0.875rem;
+        }
+    </style>
+</h:body>
+</html> 

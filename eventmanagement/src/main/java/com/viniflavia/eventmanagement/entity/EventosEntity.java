@@ -1,7 +1,7 @@
 package com.viniflavia.eventmanagement.entity;
 
 import java.io.Serializable;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,49 +11,60 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 
 @Entity
 @Table(name = "eventos")
 @NamedQueries({
     @NamedQuery(name = "Evento.findAll", query = "SELECT e FROM Evento e ORDER BY e.dataInicio DESC"),
-    @NamedQuery(name = "Evento.findByUsuario", query = "SELECT e FROM Evento e WHERE e.criadoPor = :usuarioId ORDER BY e.dataInicio DESC")
+    @NamedQuery(name = "Evento.findByUsuario", query = "SELECT e FROM Evento e WHERE e.criadoPor = :usuarioId ORDER BY e.dataInicio DESC"),
+    @NamedQuery(name = "Evento.findProximos", query = "SELECT e FROM Evento e WHERE e.dataInicio >= :dataAtual ORDER BY e.dataInicio ASC")
 })
 public class EventosEntity implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id")
+    private Integer id;
     
-    @Column(nullable = false)
+    @Column(name = "titulo", nullable = false, length = 200)
     private String titulo;
     
-    @Column(columnDefinition = "TEXT")
+    @Column(name = "descricao", columnDefinition = "TEXT")
     private String descricao;
     
     @Column(name = "data_inicio", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataInicio;
+    private LocalDateTime dataInicio;
     
-    @Column(name = "data_fim")
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataFim;
+    @Column(name = "data_fim", nullable = false)
+    private LocalDateTime dataFim;
     
-    @Column(nullable = false)
+    @Column(name = "local", length = 200)
     private String local;
     
-    @Column(name = "criado_por", nullable = false)
-    private Long criadoPor;
+    @Column(name = "criado_por")
+    private Integer criadoPor;
     
-    @Column(name = "data_criacao", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    private Date dataCriacao;
+    @Column(name = "data_criacao")
+    private LocalDateTime dataCriacao;
     
-    public Long getId() {
+    public EventosEntity() {
+    }
+
+    public EventosEntity(Integer id, String titulo, String descricao, LocalDateTime dataInicio, LocalDateTime dataFim, String local, Integer criadoPor, LocalDateTime dataCriacao) {
+        this.id = id;
+        this.titulo = titulo;
+        this.descricao = descricao;
+        this.dataInicio = dataInicio;
+        this.dataFim = dataFim;
+        this.local = local;
+        this.criadoPor = criadoPor;
+        this.dataCriacao = dataCriacao;
+    }
+
+    public Integer getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -73,19 +84,19 @@ public class EventosEntity implements Serializable {
         this.descricao = descricao;
     }
 
-    public Date getDataInicio() {
+    public LocalDateTime getDataInicio() {
         return dataInicio;
     }
 
-    public void setDataInicio(Date dataInicio) {
+    public void setDataInicio(LocalDateTime dataInicio) {
         this.dataInicio = dataInicio;
     }
 
-    public Date getDataFim() {
+    public LocalDateTime getDataFim() {
         return dataFim;
     }
 
-    public void setDataFim(Date dataFim) {
+    public void setDataFim(LocalDateTime dataFim) {
         this.dataFim = dataFim;
     }
 
@@ -97,19 +108,19 @@ public class EventosEntity implements Serializable {
         this.local = local;
     }
 
-    public Long getCriadoPor() {
+    public Integer getCriadoPor() {
         return criadoPor;
     }
 
-    public void setCriadoPor(Long criadoPor) {
+    public void setCriadoPor(Integer criadoPor) {
         this.criadoPor = criadoPor;
     }
 
-    public Date getDataCriacao() {
+    public LocalDateTime getDataCriacao() {
         return dataCriacao;
     }
 
-    public void setDataCriacao(Date dataCriacao) {
+    public void setDataCriacao(LocalDateTime dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 }

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+    <ui:composition>
+        <p:menubar styleClass="app-navbar">
+            <div class="navbar-container">
+                <div class="navbar-left">
+                    <div class="app-logo">
+                        <i class="pi pi-calendar" style="font-size: 1.5rem; color: #6366F1;"></i>
+                        <span>EventHub</span>
+                    </div>
+                    
+                    <p:menuitem value="Home" icon="pi pi-home" url="home.xhtml" styleClass="nav-item #{param.activePage == 'home' ? 'active' : ''}" />
+                    <p:menuitem value="Usuários" icon="pi pi-users" url="usuarios.xhtml" styleClass="nav-item #{param.activePage == 'usuarios' ? 'active' : ''}" />
+                    <p:menuitem value="Eventos" icon="pi pi-calendar" url="eventos.xhtml" styleClass="nav-item #{param.activePage == 'eventos' ? 'active' : ''}" />
+                    <p:menuitem value="Inscrições" icon="pi pi-ticket" url="inscricoes.xhtml" styleClass="nav-item #{param.activePage == 'inscricoes' ? 'active' : ''}" />
+                    <p:menuitem value="Participantes" icon="pi pi-id-card" url="participantes.xhtml" styleClass="nav-item #{param.activePage == 'participantes' ? 'active' : ''}" />
+                    <p:menuitem value="Notificações" icon="pi pi-bell" url="notificacoes.xhtml" styleClass="nav-item #{param.activePage == 'notificacoes' ? 'active' : ''}" />
+                    <p:menuitem value="Feedback" icon="pi pi-star" url="feedback.xhtml" styleClass="nav-item #{param.activePage == 'feedback' ? 'active' : ''}" />
+                </div>
+                
+                <div class="navbar-right">
+                    <p:submenu label="#{loginController.usuario.nome}" icon="pi pi-user" styleClass="user-menu">
+                        <p:menuitem value="Sair" icon="pi pi-sign-out" action="#{loginController.logout}" ajax="false" />
+                    </p:submenu>
+                    <div class="user-avatar">
+                        <i class="pi pi-user" style="font-size: 1.25rem;"></i>
+                    </div>
+                </div>
+            </div>
+        </p:menubar>
+    </ui:composition>
+</html> 

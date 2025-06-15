@@ -1,11 +1,16 @@
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\EventosEntity.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\JakartaRestConfiguration.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\LoginController.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\resources\JakartaEE10Resource.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\FeedbackEntity.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\InscricoesEntity.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\UsuarioController.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\NotificacoesEntity.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\EventosController.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\ParticipantesEntity.java
-E:\code\gestao_eventos_java\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\UsuarioEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\UsuarioController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\LoginController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\FeedbackEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\InscricoesController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\ParticipantesEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\UsuarioEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\EventosController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\JakartaRestConfiguration.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\InscricoesEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\resources\JakartaEE10Resource.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\NotificacoesEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\NotificacoesController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\ExplorarController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\ParticipantesController.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\entity\EventosEntity.java
+C:\Users\vinic\OneDrive\Área de Trabalho\teste\TopicosIII_FlaviaS_Gestao_Eventos\eventmanagement\src\main\java\com\viniflavia\eventmanagement\controller\FeedbackController.java

@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+        <meta name="theme-color" content="#6366F1" />
+    </f:facet>
+    <title>Gerenciar Feedback - EventHub</title>
+
+    <h:outputStylesheet name="css/home.css" library="eventhub-layout" />
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+</h:head>
+
+<h:body class="p-component">
+    <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
+
+    <h:form id="mainForm">
+        <!-- Navbar Componente -->
+        <ui:include src="/WEB-INF/navbar.xhtml">
+            <ui:param name="activePage" value="feedback" />
+        </ui:include>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content-container">
+            <div class="content-header">
+                <h1 class="page-title">
+                    <i class="pi pi-star"></i>
+                    Gerenciar Feedback
+                </h1>
+                <p class="page-description">Gerencie todos os feedbacks dos eventos</p>
+            </div>
+
+            <!-- Botões de Ação -->
+            <div class="action-buttons">
+                <p:commandButton value="Novo Feedback" 
+                               icon="pi pi-plus" 
+                               styleClass="p-button-primary"
+                               action="#{feedbackController.prepararNovoFeedback}"
+                               update="@form"
+                               oncomplete="PF('feedbackDialog').show()" />
+            </div>
+
+            <!-- Tabela de Feedback -->
+            <div class="data-table-container">
+                <p:dataTable value="#{feedbackController.listarTodosFeedbacks()}" 
+                           var="feedback" 
+                           styleClass="p-datatable-striped p-datatable-gridlines"
+                           paginator="true" 
+                           rows="10"
+                           paginatorTemplate="{FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                           rowsPerPageTemplate="5,10,20,50"
+                           emptyMessage="Nenhum feedback encontrado">
+                    
+                    <p:column headerText="ID" width="60">
+                        <h:outputText value="#{feedback.id}" />
+                    </p:column>
+                    
+                    <p:column headerText="Evento" width="180">
+                        <h:outputText value="#{feedbackController.getNomeEvento(feedback.eventoId)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Usuário" width="150">
+                        <h:outputText value="#{feedbackController.getNomeUsuario(feedback.usuarioId)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Comentário" width="300">
+                        <h:outputText value="#{feedback.comentario}" />
+                    </p:column>
+                    
+                    <p:column headerText="Nota" width="100">
+                        <div class="rating-display">
+                            <ui:repeat value="#{feedback.nota}" var="i">
+                                <i class="pi pi-star-fill" style="color: #ffc107;"></i>
+                            </ui:repeat>
+                            <ui:repeat value="#{5 - feedback.nota}" var="i">
+                                <i class="pi pi-star" style="color: #e5e7eb;"></i>
+                            </ui:repeat>
+                            <span class="rating-text">(#{feedback.nota}/5)</span>
+                        </div>
+                    </p:column>
+                    
+                    <p:column headerText="Data Comentário" width="150">
+                        <h:outputText value="#{feedbackController.formatarDataComentarioString(feedback.dataComentario)}" />
+                    </p:column>
+                    
+                    <p:column headerText="Ações" width="150">
+                        <div class="action-buttons-cell">
+                            <p:commandButton icon="pi pi-eye" 
+                                           styleClass="p-button-rounded p-button-text p-button-sm"
+                                           action="#{feedbackController.detalhesFeedback(feedback)}"
+                                           oncomplete="PF('detalhesDialog').show()" />
+                            
+                            <p:commandButton icon="pi pi-pencil" 
+                                           styleClass="p-button-rounded p-button-text p-button-sm"
+                                           action="#{feedbackController.prepararEditarFeedback(feedback)}"
+                                           update="@form"
+                                           oncomplete="PF('feedbackDialog').show()" />
+                            
+                            <p:commandButton icon="pi pi-trash" 
+                                           styleClass="p-button-rounded p-button-text p-button-danger p-button-sm"
+                                           action="#{feedbackController.excluirFeedback(feedback)}"
+                                           update="@form"
+                                           onclick="return confirm('Tem certeza que deseja excluir este feedback?')" />
+                        </div>
+                    </p:column>
+                </p:dataTable>
+            </div>
+        </div>
+
+        <!-- Dialog para Criar/Editar Feedback -->
+        <p:dialog header="#{feedbackController.modoEdicao ? 'Editar Feedback' : 'Novo Feedback'}" 
+                 widgetVar="feedbackDialog" 
+                 modal="true" 
+                 showEffect="fade" 
+                 hideEffect="fade"
+                 styleClass="dialog-form">
+            
+            <div class="form-container">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="eventoId">Evento:</label>
+                        <p:selectOneMenu id="eventoId" value="#{feedbackController.feedback.eventoId}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione um evento" itemValue="" />
+                            <f:selectItems value="#{feedbackController.listaEventos}" 
+                                         var="evento" 
+                                         itemLabel="#{evento.titulo}(#{evento.id})" 
+                                         itemValue="#{evento.id}" />
+                        </p:selectOneMenu>
+                        <small class="form-help">Selecione o evento sobre o qual é o feedback</small>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="usuarioId">Usuário:</label>
+                        <p:selectOneMenu id="usuarioId" value="#{feedbackController.feedback.usuarioId}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione um usuário" itemValue="" />
+                            <f:selectItems value="#{feedbackController.listaUsuarios}" 
+                                         var="usuario" 
+                                         itemLabel="#{usuario.nome}(#{usuario.codigo})" 
+                                         itemValue="#{usuario.codigo}" />
+                        </p:selectOneMenu>
+                        <small class="form-help">Selecione o usuário que enviou o feedback</small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="comentario">Comentário:</label>
+                        <p:inputTextarea id="comentario" value="#{feedbackController.feedback.comentario}" 
+                                       styleClass="form-control" 
+                                       rows="4" 
+                                       placeholder="Digite seu comentário sobre o evento" />
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="nota">Nota:</label>
+                        <p:selectOneMenu id="nota" value="#{feedbackController.feedback.nota}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione uma nota" itemValue="" />
+                            <f:selectItem itemLabel="1 - Muito Ruim" itemValue="1" />
+                            <f:selectItem itemLabel="2 - Ruim" itemValue="2" />
+                            <f:selectItem itemLabel="3 - Regular" itemValue="3" />
+                            <f:selectItem itemLabel="4 - Bom" itemValue="4" />
+                            <f:selectItem itemLabel="5 - Excelente" itemValue="5" />
+                        </p:selectOneMenu>
+                        <small class="form-help">Avalie o evento de 1 a 5 estrelas</small>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <div class="info-message">
+                            <i class="pi pi-info-circle"></i>
+                            <span>A data e hora do comentário serão registradas automaticamente quando o feedback for criado.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <f:facet name="footer">
+                <div class="dialog-footer">
+                    <p:commandButton value="Salvar" 
+                                   icon="pi pi-check" 
+                                   styleClass="p-button-primary"
+                                   action="#{feedbackController.salvarFeedback}"
+                                   update="@form"
+                                   oncomplete="if (!args.validationFailed) {PF('feedbackDialog').hide()}" />
+                    
+                    <p:commandButton value="Limpar" 
+                                   icon="pi pi-refresh" 
+                                   styleClass="p-button-outlined"
+                                   action="#{feedbackController.limparFormulario}"
+                                   update="@form" />
+                    
+                    <p:commandButton value="Cancelar" 
+                                   icon="pi pi-times" 
+                                   styleClass="p-button-secondary"
+                                   onclick="PF('feedbackDialog').hide()" />
+                </div>
+            </f:facet>
+        </p:dialog>
+
+        <!-- Dialog de Detalhes -->
+        <p:dialog header="Detalhes do Feedback" 
+                 widgetVar="detalhesDialog" 
+                 modal="true" 
+                 showEffect="fade" 
+                 hideEffect="fade"
+                 styleClass="dialog-details">
+            
+            <div class="details-container">
+                <div class="detail-row">
+                    <span class="detail-label">ID:</span>
+                    <span class="detail-value">#{feedbackController.feedbackSelecionado.id}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Evento:</span>
+                    <span class="detail-value">#{feedbackController.getNomeEvento(feedbackController.feedbackSelecionado.eventoId)}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Usuário:</span>
+                    <span class="detail-value">#{feedbackController.getNomeUsuario(feedbackController.feedbackSelecionado.usuarioId)}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Comentário:</span>
+                    <span class="detail-value">#{feedbackController.feedbackSelecionado.comentario}</span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Nota:</span>
+                    <span class="detail-value">
+                        <div class="rating-display">
+                            <ui:repeat value="#{feedbackController.feedbackSelecionado.nota}" var="i">
+                                <i class="pi pi-star-fill" style="color: #ffc107;"></i>
+                            </ui:repeat>
+                            <ui:repeat value="#{5 - feedbackController.feedbackSelecionado.nota}" var="i">
+                                <i class="pi pi-star" style="color: #e5e7eb;"></i>
+                            </ui:repeat>
+                            <span class="rating-text">(#{feedbackController.feedbackSelecionado.nota}/5)</span>
+                        </div>
+                    </span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Data do Comentário:</span>
+                    <span class="detail-value">
+                        #{feedbackController.formatarDataComentarioString(feedbackController.feedbackSelecionado.dataComentario)}
+                    </span>
+                </div>
+                
+                <div class="detail-row">
+                    <span class="detail-label">Avaliação:</span>
+                    <span class="detail-value">
+                        <h:outputText value="Excelente" rendered="#{feedbackController.feedbackSelecionado.nota == 5}" />
+                        <h:outputText value="Bom" rendered="#{feedbackController.feedbackSelecionado.nota == 4}" />
+                        <h:outputText value="Regular" rendered="#{feedbackController.feedbackSelecionado.nota == 3}" />
+                        <h:outputText value="Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 2}" />
+                        <h:outputText value="Muito Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 1}" />
+                    </span>
+                </div>
+            </div>
+            
+            <f:facet name="footer">
+                <div class="dialog-footer">
+                    <p:commandButton value="Fechar" 
+                                   icon="pi pi-times" 
+                                   styleClass="p-button-secondary"
+                                   onclick="PF('detalhesDialog').hide()" />
+                </div>
+            </f:facet>
+        </p:dialog>
+
+        <!-- Mensagens -->
+        <p:growl id="messages" showDetail="true" life="3000" />
+    </h:form>
+
+    <style>
+        .rating-display {
+            display: flex;
+            align-items: center;
+            gap: 0.125rem;
+        }
+        
+        .rating-text {
+            margin-left: 0.5rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .action-buttons-cell {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: center;
+        }
+        
+        .dialog-form {
+            width: 700px;
+        }
+        
+        .dialog-details {
+            width: 550px;
+        }
+        
+        .form-container {
+            padding: 1rem 0;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .form-group {
+            flex: 1;
+        }
+        
+        .form-group.full-width {
+            flex: 1;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+        }
+        
+        .form-control {
+            width: 100%;
+        }
+        
+        .form-help {
+            display: block;
+            margin-top: 0.25rem;
+            font-size: 0.75rem;
+            color: #6b7280;
+        }
+        
+        .details-container {
+            padding: 1rem 0;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 1rem;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        
+        .detail-label {
+            font-weight: 600;
+            color: #374151;
+            width: 140px;
+            flex-shrink: 0;
+        }
+        
+        .detail-value {
+            color: #6b7280;
+        }
+        
+        .dialog-footer {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+            padding-top: 1rem;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .error-message {
+            color: #dc3545;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+            display: block;
+        }
+        
+        .ui-message-error {
+            color: #dc3545;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
+        }
+        
+        .ui-message-error .ui-message-error-detail {
+            color: #dc3545;
+        }
+        
+        .info-message {
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 4px;
+            padding: 0.75rem;
+            color: #1976d2;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        
+        .info-message i {
+            color: #2196f3;
+        }
+        
+        /* Estilos para o select */
+        .ui-selectonemenu {
+            width: 100%;
+        }
+        
+        .ui-selectonemenu-label {
+            font-size: 0.875rem;
+        }
+        
+        .ui-selectonemenu-trigger {
+            border-left: 1px solid #d1d5db;
+        }
+        
+        /* Melhorar espaçamento do formulário */
+        .form-group select {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+        
+        /* Estilo para itens do select */
+        .ui-selectonemenu-item {
+            padding: 0.5rem;
+            font-size: 0.875rem;
+        }
+        
+        .ui-selectonemenu-item:hover {
+            background-color: #f3f4f6;
+        }
+        
+        /* Estilos para estrelas */
+        .pi-star-fill {
+            color: #ffc107 !important;
+        }
+        
+        .pi-star {
+            color: #e5e7eb !important;
+        }
+    </style>
+</h:body>
+</html> 

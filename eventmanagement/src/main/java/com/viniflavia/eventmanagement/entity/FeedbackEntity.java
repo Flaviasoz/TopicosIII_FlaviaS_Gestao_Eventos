@@ -1,13 +1,31 @@
 package com.viniflavia.eventmanagement.entity;
 
+import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class FeedbackEntity {
+@Entity
+@Table(name = "feedback")
+public class FeedbackEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "evento_id", nullable = false)
     private Integer eventoId;
+
+    @Column(name = "usuario_id")
     private Integer usuarioId;
+
+    @Column(name = "comentario", nullable = false, columnDefinition = "TEXT")
     private String comentario;
+
+    @Column(name = "nota")
     private Integer nota;
+
+    @Column(name = "data_comentario")
     private LocalDateTime dataComentario;
 
     public FeedbackEntity() {

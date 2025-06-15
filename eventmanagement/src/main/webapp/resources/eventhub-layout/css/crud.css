@@ -1,0 +1,395 @@
+/* Estilos específicos para páginas de CRUD */
+
+/* Cabeçalho da página */
+.content-header {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    margin-bottom: 2rem;
+}
+
+.page-title {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-size: 2rem;
+    font-weight: 700;
+    color: #1F2937;
+    margin: 0 0 0.5rem 0;
+}
+
+.page-title i {
+    color: #6366F1;
+    font-size: 1.75rem;
+}
+
+.page-description {
+    color: #6B7280;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Botões de ação */
+.action-buttons {
+    margin-bottom: 2rem;
+}
+
+.action-buttons .p-button {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.action-buttons .p-button:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+/* Container da tabela */
+.data-table-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+/* Estilos da tabela */
+.p-datatable {
+    border: none !important;
+}
+
+.p-datatable .p-datatable-header {
+    background: #F9FAFB;
+    border: none;
+    padding: 1.5rem;
+    font-weight: 600;
+    color: #374151;
+}
+
+.p-datatable .p-datatable-thead > tr > th {
+    background: #F9FAFB !important;
+    border: none !important;
+    border-bottom: 2px solid #E5E7EB !important;
+    color: #374151 !important;
+    font-weight: 600 !important;
+    padding: 1rem !important;
+    font-size: 0.875rem !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.05em !important;
+}
+
+.p-datatable .p-datatable-tbody > tr {
+    border-bottom: 1px solid #F3F4F6 !important;
+    transition: background-color 0.2s ease;
+}
+
+.p-datatable .p-datatable-tbody > tr:hover {
+    background-color: #F9FAFB !important;
+}
+
+.p-datatable .p-datatable-tbody > tr > td {
+    border: none !important;
+    padding: 1rem !important;
+    color: #6B7280 !important;
+    vertical-align: middle !important;
+}
+
+.p-datatable .p-datatable-tbody > tr:nth-child(even) {
+    background-color: #FAFAFA !important;
+}
+
+/* Paginação */
+.p-paginator {
+    background: #F9FAFB !important;
+    border: none !important;
+    border-top: 1px solid #E5E7EB !important;
+    padding: 1rem 1.5rem !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page {
+    border-radius: 6px !important;
+    margin: 0 0.125rem !important;
+    min-width: 2.5rem !important;
+    height: 2.5rem !important;
+    border: 1px solid #D1D5DB !important;
+    background: white !important;
+    color: #374151 !important;
+    font-weight: 500 !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page.p-highlight {
+    background: #6366F1 !important;
+    border-color: #6366F1 !important;
+    color: white !important;
+}
+
+.p-paginator .p-paginator-pages .p-paginator-page:hover {
+    background: #F3F4F6 !important;
+    border-color: #9CA3AF !important;
+}
+
+/* Badges */
+.badge-admin,
+.badge-cliente,
+.badge-presente,
+.badge-ausente,
+.badge-lida,
+.badge-nao-lida {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-admin {
+    background-color: #DC2626;
+    color: white;
+}
+
+.badge-cliente {
+    background-color: #059669;
+    color: white;
+}
+
+.badge-presente {
+    background-color: #059669;
+    color: white;
+}
+
+.badge-ausente {
+    background-color: #DC2626;
+    color: white;
+}
+
+.badge-lida {
+    background-color: #059669;
+    color: white;
+}
+
+.badge-nao-lida {
+    background-color: #F59E0B;
+    color: #92400E;
+}
+
+/* Botões de ação nas células */
+.action-buttons-cell {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+}
+
+.action-buttons-cell .p-button {
+    width: 2rem !important;
+    height: 2rem !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+}
+
+.action-buttons-cell .p-button:hover {
+    transform: scale(1.1) !important;
+}
+
+/* Rating display */
+.rating-display {
+    display: flex;
+    gap: 0.125rem;
+    align-items: center;
+}
+
+.rating-display i {
+    font-size: 0.875rem;
+}
+
+/* Dialogs */
+.ui-dialog {
+    border-radius: 12px !important;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+    border: none !important;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    background: #F9FAFB !important;
+    border: none !important;
+    border-bottom: 1px solid #E5E7EB !important;
+    border-radius: 12px 12px 0 0 !important;
+    padding: 1.5rem !important;
+}
+
+.ui-dialog .ui-dialog-title {
+    font-weight: 600 !important;
+    color: #1F2937 !important;
+    font-size: 1.25rem !important;
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 1.5rem !important;
+    background: white !important;
+}
+
+.ui-dialog .ui-dialog-footer {
+    background: #F9FAFB !important;
+    border: none !important;
+    border-top: 1px solid #E5E7EB !important;
+    border-radius: 0 0 12px 12px !important;
+    padding: 1.5rem !important;
+}
+
+/* Formulários */
+.form-container {
+    padding: 1rem 0;
+}
+
+.form-row {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-group.full-width {
+    flex: 1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.form-control {
+    width: 100% !important;
+    border: 1px solid #D1D5DB !important;
+    border-radius: 8px !important;
+    padding: 0.75rem !important;
+    font-size: 0.875rem !important;
+    transition: all 0.2s ease !important;
+    background: white !important;
+}
+
+.form-control:focus {
+    border-color: #6366F1 !important;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1) !important;
+    outline: none !important;
+}
+
+/* Detalhes */
+.details-container {
+    padding: 1rem 0;
+}
+
+.detail-row {
+    display: flex;
+    margin-bottom: 1rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #F3F4F6;
+}
+
+.detail-row:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.detail-label {
+    font-weight: 600;
+    color: #374151;
+    width: 140px;
+    flex-shrink: 0;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.detail-value {
+    color: #6B7280;
+    font-size: 0.875rem;
+}
+
+/* Footer dos dialogs */
+.dialog-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+    padding-top: 1rem;
+}
+
+.dialog-footer .p-button {
+    font-weight: 600;
+    padding: 0.75rem 1.5rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.dialog-footer .p-button:hover {
+    transform: translateY(-1px);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .content-header {
+        padding: 1.5rem;
+    }
+    
+    .page-title {
+        font-size: 1.5rem;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .action-buttons-cell {
+        flex-direction: column;
+        gap: 0.25rem;
+    }
+    
+    .detail-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .detail-label {
+        width: auto;
+    }
+    
+    .ui-dialog {
+        width: 95% !important;
+        margin: 1rem auto !important;
+    }
+}
+
+@media (max-width: 480px) {
+    .main-content-container {
+        padding: 5rem 1rem 2rem;
+    }
+    
+    .content-header {
+        padding: 1rem;
+    }
+    
+    .page-title {
+        font-size: 1.25rem;
+    }
+    
+    .action-buttons .p-button {
+        width: 100%;
+        margin-bottom: 0.5rem;
+    }
+} 

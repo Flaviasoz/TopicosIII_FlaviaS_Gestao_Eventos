@@ -50,7 +50,6 @@ public class LoginController implements Serializable {
                 usuario = usuarios.get(0);
                 logado = true;
 
-                // Criação de sessão manual
                 HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
                         .getExternalContext().getSession(true);
                 session.setAttribute("usuarioLogado", usuario);
@@ -64,6 +63,8 @@ public class LoginController implements Serializable {
             }
         } catch (Exception e) {
             logado = false;
+            System.err.println("Erro no login: " + e.getMessage());
+            e.printStackTrace();
             FacesContext.getCurrentInstance().addMessage(null,
                 new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao tentar logar."));
             return null;

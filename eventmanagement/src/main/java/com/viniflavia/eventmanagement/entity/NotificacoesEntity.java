@@ -1,13 +1,31 @@
 package com.viniflavia.eventmanagement.entity;
 
+import jakarta.persistence.*;
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
-public class NotificacoesEntity {
+@Entity
+@Table(name = "notificacoes")
+public class NotificacoesEntity implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
     private Integer id;
+
+    @Column(name = "usuario_id", nullable = false)
     private Integer usuarioId;
+
+    @Column(name = "titulo", length = 200)
     private String titulo;
+
+    @Column(name = "mensagem", columnDefinition = "TEXT")
     private String mensagem;
+
+    @Column(name = "enviada_em")
     private LocalDateTime enviadaEm;
+
+    @Column(name = "lida")
     private Boolean lida;
 
     public NotificacoesEntity() {

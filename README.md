@@ -1,7 +1,3 @@
-Claro! Aqui está o seu README revisado, com uma estrutura mais clara, ortografia corrigida e formatação padronizada para facilitar a leitura e o entendimento:
-
----
-
 # 📄 Sistema de Gestão de Eventos
 
 ## 👥 Autores

@@ -12,7 +12,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
             <meta name="theme-color" content="#6366F1" />
         </f:facet>
-        <title>EventHub - Meus Eventos</title>
+        <title>Todos os Eventos - EventHub</title>
 
         <h:outputStylesheet name="css/home.css" library="eventhub-layout" />
         <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
@@ -21,39 +21,162 @@
     </h:head>
 
     <h:body class="p-component">
+        <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
 
-        <div class="app-container">
-            <div class="section-header">
-                <h2 class="section-title">Todos os Eventos</h2>
-                <p:commandButton value="Criar Evento" 
-                                icon="pi pi-plus" 
-                                rendered="#{loginController.isAdmin}"
-                                action="#{eventoController.prepararNovoEvento}" 
-                                update="@form"
-                                oncomplete="PF('eventoDialog').show()" />
-            </div>
-            
-            <div class="events-grid">
-                <ui:repeat value="#{eventoController.todosEventos}" var="evento">
-                    <div class="event-card">
-                        <div class="event-date">
-                            <span class="day">#{evento.dataInicio.day}</span>
-                            <span class="month">#{evento.dataInicio.month}</span>
+        <h:form id="mainForm">
+            <!-- Navbar Componente -->
+            <ui:include src="/WEB-INF/navbar.xhtml">
+                <ui:param name="activePage" value="todosEventos" />
+            </ui:include>
+
+            <!-- Conteúdo Principal -->
+            <div class="main-content-container">
+                <div class="content-header">
+                    <h1 class="page-title">
+                        <i class="pi pi-calendar"></i>
+                        Todos os Eventos
+                    </h1>
+                    <p class="page-description">Visualize todos os eventos disponíveis</p>
+                </div>
+                
+                <div class="events-grid">
+                    <ui:repeat value="#{eventoController.listarTodosEventos()}" var="evento">
+                        <div class="event-card p-shadow-2">
+                            <div class="event-date-badge">
+                                <span class="event-day">
+                                    <h:outputText value="#{eventoController.formatarDiaData(evento.dataInicio)}" />
+                                </span>
+                                <span class="event-month">
+                                    <h:outputText value="#{eventoController.formatarMesData(evento.dataInicio)}" />
+                                </span>
+                            </div>
+                            <div class="event-details">
+                                <h3 class="event-title">#{evento.titulo}</h3>
+                                <p class="event-location"><i class="pi pi-map-marker"></i> #{evento.local}</p>
+                                <p class="event-time">
+                                    <i class="pi pi-clock"></i>
+                                    <h:outputText value="#{eventoController.formatarHorario(evento.dataInicio)}" />
+                                    -
+                                    <h:outputText value="#{eventoController.formatarHorario(evento.dataFim)}" />
+                                </p>
+                                <div class="event-actions">
+                                    <p:commandButton value="Detalhes" 
+                                                    styleClass="p-button-outlined p-button-sm"
+                                                    action="#{eventoController.detalhesEvento(evento)}"
+                                                    oncomplete="PF('detalhesDialog').show()" />
+                                    
+                                    <p:commandButton value="Inscrever-se" 
+                                                    styleClass="p-button-primary p-button-sm"
+                                                    rendered="#{!inscricoesController.isInscrito(evento.id, loginController.usuario.codigo)}"
+                                                    action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}" />
+                                    
+                                    <p:commandButton value="Inscrito" 
+                                                    styleClass="p-button-success p-button-sm"
+                                                    rendered="#{inscricoesController.isInscrito(evento.id, loginController.usuario.codigo)}"
+                                                    disabled="true" />
+                                </div>
+                            </div>
                         </div>
-                        <div class="event-details">
-                            <h3>#{evento.titulo}</h3>
-                            <p><i class="pi pi-map-marker"></i> #{evento.local}</p>
-                            <p><i class="pi pi-clock"></i> 
-                                #{evento.dataInicio.hour}:#{evento.dataInicio.minute} - 
-                                #{evento.dataFim.hour}:#{evento.dataFim.minute}
-                            </p>
-                            <p:commandButton value="Inscrever-se" 
-                                            styleClass="p-button-outlined"
-                                            action="#{inscricaoController.inscrever(evento.id)}" />
+                    </ui:repeat>
+                    
+                    <div class="no-events-message" rendered="#{empty eventoController.listarTodosEventos()}">
+                        <i class="pi pi-calendar no-events-icon"></i>
+                        <p class="no-events-text">Nenhum evento encontrado</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dialog de Detalhes -->
+            <p:dialog header="Detalhes do Evento" widgetVar="detalhesDialog" modal="true" width="60%" styleClass="details-dialog">
+                <div class="event-details-container" rendered="#{not empty eventoController.eventoSelecionado}">
+                    <div class="event-details-header">
+                        <h2>#{eventoController.eventoSelecionado.titulo}</h2>
+                        <div class="event-meta-info">
+                            <span class="event-meta-item">
+                                <i class="pi pi-calendar"></i> 
+                                #{eventoController.formatarDataInicio(eventoController.eventoSelecionado.dataInicio)}
+                            </span>
+                            <span class="event-meta-item">
+                                <i class="pi pi-map-marker"></i> #{eventoController.eventoSelecionado.local}
+                            </span>
                         </div>
                     </div>
-                </ui:repeat>
-            </div>
-        </div>
+                    
+                    <div class="event-details-content">
+                        <h3>Descrição</h3>
+                        <p class="event-description">#{eventoController.eventoSelecionado.descricao}</p>
+                        
+                        <div class="event-details-actions">
+                            <p:commandButton value="Participar" 
+                                           styleClass="p-button-primary"
+                                           action="#{inscricoesController.inscreverEmEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                           rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                           
+                            <p:commandButton value="Já Inscrito" 
+                                           styleClass="p-button-success"
+                                           rendered="#{inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                           disabled="true" />
+                        </div>
+                    </div>
+                </div>
+            </p:dialog>
+
+            <!-- Mensagens -->
+            <p:growl id="messages" showDetail="true" life="3000" />
+        </h:form>
+
+        <style>
+            .dialog-details {
+                width: 550px;
+            }
+            
+            .event-details-container {
+                padding: 1rem;
+            }
+            
+            .event-details-header {
+                margin-bottom: 1.5rem;
+                padding-bottom: 1rem;
+                border-bottom: 1px solid #e5e7eb;
+            }
+            
+            .event-details-header h2 {
+                margin: 0 0 0.5rem;
+                color: var(--text-primary);
+            }
+            
+            .event-meta-info {
+                display: flex;
+                gap: 1.5rem;
+            }
+            
+            .event-meta-item {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                color: var(--text-secondary);
+            }
+            
+            .event-details-content {
+                margin-top: 1.5rem;
+            }
+            
+            .event-details-content h3 {
+                margin: 0 0 1rem;
+                color: var(--text-primary);
+            }
+            
+            .event-description {
+                color: var(--text-secondary);
+                margin: 0 0 2rem;
+                line-height: 1.6;
+            }
+            
+            .event-details-actions {
+                display: flex;
+                justify-content: flex-end;
+                gap: 0.5rem;
+            }
+        </style>
     </h:body>
 </html>

@@ -102,6 +102,7 @@
                             <p:commandButton icon="pi pi-eye" 
                                            styleClass="p-button-rounded p-button-text p-button-sm"
                                            action="#{feedbackController.detalhesFeedback(feedback)}"
+                                           update="@form"
                                            oncomplete="PF('detalhesDialog').show()" />
                             
                             <p:commandButton icon="pi pi-pencil" 
@@ -127,29 +128,32 @@
                  modal="true" 
                  showEffect="fade" 
                  hideEffect="fade"
-                 styleClass="dialog-form">
+                 styleClass="dialog-form"
+                 onHide="PF('limparFormularioFeedback').execute()">
             
             <div class="form-container">
-                <h:panelGroup rendered="#{empty feedbackController.listaEventosParaFeedback}">
+                <h:panelGroup rendered="#{empty (feedbackController.modoEdicao ? feedbackController.listaEventosParaEdicao : feedbackController.listaEventosParaFeedback)}">
                     <div class="info-message">
                         <i class="pi pi-info-circle"></i>
                         <span>Você ainda não participou de nenhum evento ou já enviou feedback para todos os eventos que participou.</span>
                     </div>
                 </h:panelGroup>
                 
-                <h:panelGroup rendered="#{not empty feedbackController.listaEventosParaFeedback}">
+                <h:panelGroup rendered="#{not empty (feedbackController.modoEdicao ? feedbackController.listaEventosParaEdicao : feedbackController.listaEventosParaFeedback)}">
                     <div class="form-row">
                         <div class="form-group">
                             <label for="eventoId">Evento:</label>
                             <p:selectOneMenu id="eventoId" value="#{feedbackController.feedback.eventoId}" 
                                            styleClass="form-control">
                                 <f:selectItem itemLabel="Selecione um evento" itemValue="" />
-                                <f:selectItems value="#{feedbackController.listaEventosParaFeedback}" 
+                                <f:selectItems value="#{feedbackController.modoEdicao ? feedbackController.listaEventosParaEdicao : feedbackController.listaEventosParaFeedback}" 
                                              var="evento" 
                                              itemLabel="#{evento.titulo} (#{eventoController.formatarDataInicio(evento.dataInicio)})" 
                                              itemValue="#{evento.id}" />
                             </p:selectOneMenu>
-                            <small class="form-help">Selecione o evento sobre o qual é o feedback (apenas eventos que você participou e ainda não enviou feedback)</small>
+                            <small class="form-help">
+                                #{feedbackController.modoEdicao ? 'Selecione o evento para o feedback (inclui o evento atual)' : 'Selecione o evento sobre o qual é o feedback (apenas eventos que você participou e ainda não enviou feedback)'}
+                            </small>
                         </div>
                     </div>
                     
@@ -192,7 +196,7 @@
             
             <f:facet name="footer">
                 <div class="dialog-footer">
-                    <h:panelGroup rendered="#{not empty feedbackController.listaEventosParaFeedback}">
+                    <h:panelGroup rendered="#{not empty (feedbackController.modoEdicao ? feedbackController.listaEventosParaEdicao : feedbackController.listaEventosParaFeedback)}">
                         <p:commandButton value="Salvar" 
                                        icon="pi pi-check" 
                                        styleClass="p-button-primary"
@@ -221,56 +225,66 @@
                  modal="true" 
                  showEffect="fade" 
                  hideEffect="fade"
-                 styleClass="dialog-details">
+                 styleClass="dialog-details"
+                 onHide="PF('limparFeedbackSelecionado').execute()">
             
             <div class="details-container">
-                <div class="detail-row">
-                    <span class="detail-label">ID:</span>
-                    <span class="detail-value">#{feedbackController.feedbackSelecionado.id}</span>
-                </div>
+                <h:panelGroup rendered="#{feedbackController.feedbackSelecionado.id != null}">
+                    <div class="detail-row">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{feedbackController.feedbackSelecionado.id}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Evento:</span>
+                        <span class="detail-value">#{feedbackController.getNomeEvento(feedbackController.feedbackSelecionado.eventoId)}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Comentário:</span>
+                        <span class="detail-value">#{feedbackController.feedbackSelecionado.comentario}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Nota:</span>
+                        <span class="detail-value">
+                            <div class="rating-display">
+                                <ui:repeat value="#{feedbackController.feedbackSelecionado.nota}" var="i">
+                                    <i class="pi pi-star-fill" style="color: #ffc107;"></i>
+                                </ui:repeat>
+                                <ui:repeat value="#{5 - feedbackController.feedbackSelecionado.nota}" var="i">
+                                    <i class="pi pi-star" style="color: #e5e7eb;"></i>
+                                </ui:repeat>
+                                <span class="rating-text">(#{feedbackController.feedbackSelecionado.nota}/5)</span>
+                            </div>
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data do Comentário:</span>
+                        <span class="detail-value">
+                            #{feedbackController.formatarDataComentarioString(feedbackController.feedbackSelecionado.dataComentario)}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Avaliação:</span>
+                        <span class="detail-value">
+                            <h:outputText value="Excelente" rendered="#{feedbackController.feedbackSelecionado.nota == 5}" />
+                            <h:outputText value="Bom" rendered="#{feedbackController.feedbackSelecionado.nota == 4}" />
+                            <h:outputText value="Regular" rendered="#{feedbackController.feedbackSelecionado.nota == 3}" />
+                            <h:outputText value="Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 2}" />
+                            <h:outputText value="Muito Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 1}" />
+                        </span>
+                    </div>
+                </h:panelGroup>
                 
-                <div class="detail-row">
-                    <span class="detail-label">Evento:</span>
-                    <span class="detail-value">#{feedbackController.getNomeEvento(feedbackController.feedbackSelecionado.eventoId)}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Comentário:</span>
-                    <span class="detail-value">#{feedbackController.feedbackSelecionado.comentario}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Nota:</span>
-                    <span class="detail-value">
-                        <div class="rating-display">
-                            <ui:repeat value="#{feedbackController.feedbackSelecionado.nota}" var="i">
-                                <i class="pi pi-star-fill" style="color: #ffc107;"></i>
-                            </ui:repeat>
-                            <ui:repeat value="#{5 - feedbackController.feedbackSelecionado.nota}" var="i">
-                                <i class="pi pi-star" style="color: #e5e7eb;"></i>
-                            </ui:repeat>
-                            <span class="rating-text">(#{feedbackController.feedbackSelecionado.nota}/5)</span>
-                        </div>
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data do Comentário:</span>
-                    <span class="detail-value">
-                        #{feedbackController.formatarDataComentarioString(feedbackController.feedbackSelecionado.dataComentario)}
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Avaliação:</span>
-                    <span class="detail-value">
-                        <h:outputText value="Excelente" rendered="#{feedbackController.feedbackSelecionado.nota == 5}" />
-                        <h:outputText value="Bom" rendered="#{feedbackController.feedbackSelecionado.nota == 4}" />
-                        <h:outputText value="Regular" rendered="#{feedbackController.feedbackSelecionado.nota == 3}" />
-                        <h:outputText value="Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 2}" />
-                        <h:outputText value="Muito Ruim" rendered="#{feedbackController.feedbackSelecionado.nota == 1}" />
-                    </span>
-                </div>
+                <h:panelGroup rendered="#{feedbackController.feedbackSelecionado.id == null}">
+                    <div class="info-message">
+                        <i class="pi pi-info-circle"></i>
+                        <span>Nenhum feedback selecionado para visualizar.</span>
+                    </div>
+                </h:panelGroup>
             </div>
             
             <f:facet name="footer">
@@ -285,6 +299,20 @@
 
         <!-- Mensagens -->
         <p:growl id="messages" showDetail="true" life="3000" />
+        
+        <!-- Botão invisível para limpar feedback selecionado -->
+        <p:commandButton id="limparFeedbackSelecionado" 
+                        widgetVar="limparFeedbackSelecionado"
+                        action="#{feedbackController.limparFeedbackSelecionado}"
+                        update="@form"
+                        style="display: none;" />
+        
+        <!-- Botão invisível para limpar formulário de feedback -->
+        <p:commandButton id="limparFormularioFeedback" 
+                        widgetVar="limparFormularioFeedback"
+                        action="#{feedbackController.limparFormulario}"
+                        update="@form"
+                        style="display: none;" />
     </h:form>
 
     <style>

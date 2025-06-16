@@ -89,8 +89,25 @@ public class FeedbackController implements Serializable {
     }
 
     public void prepararEditarFeedback(FeedbackEntity feedback) {
-        this.feedback = feedback;
-        modoEdicao = true;
+        try {
+            if (feedback != null && feedback.getId() != null) {
+                // Buscar o feedback diretamente do banco de dados para garantir dados atualizados
+                this.feedback = em.find(FeedbackEntity.class, feedback.getId());
+                if (this.feedback == null) {
+                    // Se não encontrar no banco, usar o feedback passado como parâmetro
+                    this.feedback = feedback;
+                }
+            } else {
+                this.feedback = new FeedbackEntity();
+            }
+            modoEdicao = true;
+        } catch (Exception e) {
+            System.err.println("Erro ao preparar edição do feedback: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o feedback original
+            this.feedback = feedback != null ? feedback : new FeedbackEntity();
+            modoEdicao = true;
+        }
     }
 
     @Transactional
@@ -240,7 +257,27 @@ public class FeedbackController implements Serializable {
     }
 
     public void detalhesFeedback(FeedbackEntity feedback) {
-        this.feedbackSelecionado = feedback;
+        try {
+            if (feedback != null && feedback.getId() != null) {
+                // Buscar o feedback diretamente do banco de dados para garantir dados atualizados
+                this.feedbackSelecionado = em.find(FeedbackEntity.class, feedback.getId());
+                if (this.feedbackSelecionado == null) {
+                    // Se não encontrar no banco, usar o feedback passado como parâmetro
+                    this.feedbackSelecionado = feedback;
+                }
+            } else {
+                this.feedbackSelecionado = new FeedbackEntity();
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar detalhes do feedback: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o feedback original
+            this.feedbackSelecionado = feedback != null ? feedback : new FeedbackEntity();
+        }
+    }
+
+    public void limparFeedbackSelecionado() {
+        this.feedbackSelecionado = new FeedbackEntity();
     }
 
     public double calcularMediaNotasPorEvento(Integer eventoId) {
@@ -584,5 +621,35 @@ public class FeedbackController implements Serializable {
      */
     public List<EventosEntity> getListaEventosParaFeedback() {
         return listarEventosParaFeedback();
+    }
+    
+    /**
+     * Obtém a lista de eventos para edição (inclui o evento atual do feedback sendo editado)
+     */
+    public List<EventosEntity> getListaEventosParaEdicao() {
+        List<EventosEntity> eventos = new ArrayList<>();
+        
+        try {
+            // Se estamos editando, adicionar o evento atual do feedback
+            if (modoEdicao && feedback != null && feedback.getEventoId() != null) {
+                EventosEntity eventoAtual = em.find(EventosEntity.class, feedback.getEventoId());
+                if (eventoAtual != null) {
+                    eventos.add(eventoAtual);
+                }
+            }
+            
+            // Adicionar os eventos onde o usuário pode enviar feedback
+            eventos.addAll(listarEventosParaFeedback());
+            
+            // Remover duplicatas baseado no ID do evento
+            return eventos.stream()
+                    .distinct()
+                    .sorted((e1, e2) -> e1.getTitulo().compareToIgnoreCase(e2.getTitulo()))
+                    .collect(java.util.stream.Collectors.toList());
+                    
+        } catch (Exception e) {
+            System.err.println("Erro ao obter lista de eventos para edição: " + e.getMessage());
+            return new ArrayList<>();
+        }
     }
 } 

@@ -169,7 +169,27 @@ public class UsuarioController implements Serializable {
     }
 
     public void detalhesUsuario(UsuarioEntity usuario) {
-        this.usuarioSelecionado = usuario;
+        try {
+            if (usuario != null && usuario.getCodigo() != null) {
+                // Buscar o usuário diretamente do banco de dados para garantir dados atualizados
+                this.usuarioSelecionado = em.find(UsuarioEntity.class, usuario.getCodigo());
+                if (this.usuarioSelecionado == null) {
+                    // Se não encontrar no banco, usar o usuário passado como parâmetro
+                    this.usuarioSelecionado = usuario;
+                }
+            } else {
+                this.usuarioSelecionado = new UsuarioEntity();
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar detalhes do usuário: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o usuário original
+            this.usuarioSelecionado = usuario != null ? usuario : new UsuarioEntity();
+        }
+    }
+    
+    public void limparUsuarioSelecionado() {
+        this.usuarioSelecionado = new UsuarioEntity();
     }
 
     // Método para formatar data de cadastro

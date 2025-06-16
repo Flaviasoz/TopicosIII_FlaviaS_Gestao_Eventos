@@ -91,6 +91,7 @@
                             <p:commandButton icon="pi pi-eye" 
                                            styleClass="p-button-rounded p-button-text p-button-sm"
                                            action="#{usuarioController.detalhesUsuario(usuario)}"
+                                           update="@form"
                                            oncomplete="PF('detalhesDialog').show()" />
                             
                             <p:commandButton icon="pi pi-pencil" 
@@ -182,43 +183,53 @@
                  modal="true" 
                  showEffect="fade" 
                  hideEffect="fade"
-                 styleClass="dialog-details">
+                 styleClass="dialog-details"
+                 onHide="PF('limparUsuarioSelecionado').execute()">
             
             <div class="details-container">
-                <div class="detail-row">
-                    <span class="detail-label">ID:</span>
-                    <span class="detail-value">#{usuarioController.usuarioSelecionado.codigo}</span>
-                </div>
+                <h:panelGroup rendered="#{usuarioController.usuarioSelecionado.codigo != null}">
+                    <div class="detail-row">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{usuarioController.usuarioSelecionado.codigo}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Nome:</span>
+                        <span class="detail-value">#{usuarioController.usuarioSelecionado.nome}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Email:</span>
+                        <span class="detail-value">#{usuarioController.usuarioSelecionado.email}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">CPF:</span>
+                        <span class="detail-value">#{usuarioController.usuarioSelecionado.cpf}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Nível:</span>
+                        <span class="detail-value">
+                            <p:tag value="#{usuarioController.usuarioSelecionado.nivel}" 
+                                   styleClass="#{usuarioController.usuarioSelecionado.nivel == 'adm' ? 'badge-admin' : 'badge-cliente'}" />
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data de Cadastro:</span>
+                        <span class="detail-value">
+                            #{usuarioController.formatarDataCadastro(usuarioController.usuarioSelecionado.dataCadastro)}
+                        </span>
+                    </div>
+                </h:panelGroup>
                 
-                <div class="detail-row">
-                    <span class="detail-label">Nome:</span>
-                    <span class="detail-value">#{usuarioController.usuarioSelecionado.nome}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Email:</span>
-                    <span class="detail-value">#{usuarioController.usuarioSelecionado.email}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">CPF:</span>
-                    <span class="detail-value">#{usuarioController.usuarioSelecionado.cpf}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Nível:</span>
-                    <span class="detail-value">
-                        <p:tag value="#{usuarioController.usuarioSelecionado.nivel}" 
-                               styleClass="#{usuarioController.usuarioSelecionado.nivel == 'adm' ? 'badge-admin' : 'badge-cliente'}" />
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data de Cadastro:</span>
-                    <span class="detail-value">
-                        #{usuarioController.formatarDataCadastro(usuarioController.usuarioSelecionado.dataCadastro)}
-                    </span>
-                </div>
+                <h:panelGroup rendered="#{usuarioController.usuarioSelecionado.codigo == null}">
+                    <div class="info-message">
+                        <i class="pi pi-info-circle"></i>
+                        <span>Nenhum usuário selecionado para visualizar.</span>
+                    </div>
+                </h:panelGroup>
             </div>
             
             <f:facet name="footer">
@@ -233,6 +244,13 @@
 
         <!-- Mensagens -->
         <p:growl id="messages" showDetail="true" life="3000" />
+        
+        <!-- Botão invisível para limpar usuário selecionado -->
+        <p:commandButton id="limparUsuarioSelecionado" 
+                        widgetVar="limparUsuarioSelecionado"
+                        action="#{usuarioController.limparUsuarioSelecionado}"
+                        update="@form"
+                        style="display: none;" />
     </h:form>
 
     <style>

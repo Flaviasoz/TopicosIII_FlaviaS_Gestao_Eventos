@@ -57,6 +57,18 @@ public class NotificacoesUsuarioController implements Serializable {
         }
     }
 
+    /**
+     * Método público para forçar a atualização das notificações
+     * Pode ser chamado por outros controllers após ações que geram notificações
+     */
+    public void forcarAtualizacaoNotificacoes() {
+        // Limpar a lista atual para forçar recarregamento
+        this.notificacoesUsuario = null;
+        // Recarregar as notificações
+        carregarNotificacoes();
+        System.out.println("Forçada atualização das notificações do usuário ID: " + usuarioLogadoId);
+    }
+
     public List<NotificacoesEntity> getNotificacoesUsuario() {
         if (notificacoesUsuario == null) {
             inicializar();

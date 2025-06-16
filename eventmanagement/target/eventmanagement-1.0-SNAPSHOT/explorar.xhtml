@@ -124,7 +124,8 @@
                                                     <p:commandButton value="Inscrever-se" 
                                                         styleClass="p-button-primary p-button-sm"
                                                         rendered="#{!explorarController.isInscrito(evento.id)}"
-                                                        action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}" />
+                                                        action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}"
+                                                        update="@form" />
                                                 </span>
                                                 <span style="margin-left: 0.5rem;">
                                                     <p:commandButton value="Inscrito" 
@@ -173,7 +174,8 @@
                                                 <p:commandButton value="Inscrever-se" 
                                                     styleClass="p-button-primary p-button-sm"
                                                     rendered="#{!explorarController.isInscrito(evento.id)}"
-                                                    action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}" />
+                                                    action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}"
+                                                    update="@form" />
                                             </span>
                                             <span>
                                                 <p:commandButton value="Inscrito" 
@@ -270,19 +272,19 @@
                                        styleClass="p-button-primary"
                                        rendered="#{!explorarController.isInscrito(explorarController.eventoSelecionado.id)}"
                                        action="#{inscricoesController.inscreverEmEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                       update="@form:detalhesDialogFooter @form:detalhesDialogStatus eventosGrid" />
+                                       update="@form" />
                                        
                         <p:commandButton value="Cancelar Inscrição" 
                                        styleClass="p-button-outlined"
                                        rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id)}"
                                        action="#{inscricoesController.cancelarInscricao(explorarController.eventoSelecionado.id)}"
-                                       update="@form:detalhesDialogFooter @form:detalhesDialogStatus eventosGrid" />
+                                       update="@form" />
                                        
                         <p:commandButton value="Fechar" 
                                        icon="pi pi-times" 
                                        styleClass="p-button-secondary"
                                        onclick="PF('detalhesDialog').hide()"
-                                       update="eventosGrid" />
+                                       update="@form" />
                     </div>
                 </p:outputPanel>
             </f:facet>

@@ -305,7 +305,7 @@
                         <p:commandButton value="Participar" 
                                        styleClass="p-button-primary"
                                        action="#{inscricoesController.inscreverEmEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                       update="@form:detalhesDialogFooter @form:detalhesDialogStatus"
+                                       update="@form"
                                        rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
                                        
                         <p:commandButton value="Já Inscrito" 

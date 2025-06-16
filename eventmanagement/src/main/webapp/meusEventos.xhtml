@@ -147,12 +147,12 @@
                         <p:commandButton value="Cancelar Inscrição" 
                                        styleClass="p-button-outlined"
                                        action="#{inscricoesController.cancelarInscricao(eventoController.eventoSelecionado.id)}"
-                                       update="mainForm:eventosGrid" />
+                                       update="@form" />
                         <p:commandButton value="Fechar" 
                                        icon="pi pi-times" 
                                        styleClass="p-button-secondary"
                                        onclick="PF('detalhesDialog').hide()"
-                                       update="mainForm:eventosGrid" />
+                                       update="@form" />
                     </div>
                 </f:facet>
             </p:dialog>

@@ -173,6 +173,9 @@ public class InscricoesController implements Serializable {
                 em.persist(inscricao);
                 em.flush();
                 
+                // Atualizar notificações do usuário
+                atualizarNotificacoesUsuario();
+                
                 // Limpar cache após nova inscrição
                 limparCacheEventosInscritos();
                 
@@ -331,6 +334,9 @@ public class InscricoesController implements Serializable {
             InscricoesEntity inscricao = inscricoes.get(0);
             em.remove(em.merge(inscricao));
             em.flush();
+            
+            // Atualizar notificações do usuário
+            atualizarNotificacoesUsuario();
             
             // Limpar cache após cancelar inscrição
             limparCacheEventosInscritos();
@@ -582,5 +588,29 @@ public class InscricoesController implements Serializable {
         eventosInscritosCache = null;
         usuarioCacheId = null;
         System.out.println("Cache de eventos inscritos limpo");
+    }
+    
+    /**
+     * Método utilitário para atualizar as notificações do usuário logado
+     * após ações que geram notificações (inscrição/cancelamento)
+     */
+    private void atualizarNotificacoesUsuario() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null) {
+                jakarta.el.ELContext elContext = facesContext.getELContext();
+                Object bean = facesContext.getApplication().getELResolver()
+                    .getValue(elContext, null, "notificacoesUsuarioController");
+                if (bean != null && bean instanceof com.viniflavia.eventmanagement.controller.NotificacoesUsuarioController) {
+                    ((com.viniflavia.eventmanagement.controller.NotificacoesUsuarioController) bean).forcarAtualizacaoNotificacoes();
+                    System.out.println("Notificações do usuário atualizadas com sucesso");
+                } else {
+                    System.err.println("Bean notificacoesUsuarioController não encontrado");
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao atualizar notificações do usuário: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 } 

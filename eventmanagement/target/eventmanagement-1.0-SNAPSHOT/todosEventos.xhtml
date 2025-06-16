@@ -68,7 +68,8 @@
                                     <p:commandButton value="Inscrever-se" 
                                                     styleClass="p-button-primary p-button-sm"
                                                     rendered="#{!inscricoesController.isInscrito(evento.id, loginController.usuario.codigo)}"
-                                                    action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}" />
+                                                    action="#{inscricoesController.inscreverEmEvento(evento.id, loginController.usuario.codigo)}"
+                                                    update="@form" />
                                     
                                     <p:commandButton value="Inscrito" 
                                                     styleClass="p-button-success p-button-sm"
@@ -110,6 +111,7 @@
                             <p:commandButton value="Participar" 
                                            styleClass="p-button-primary"
                                            action="#{inscricoesController.inscreverEmEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                           update="@form"
                                            rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
                                            
                             <p:commandButton value="Já Inscrito" 

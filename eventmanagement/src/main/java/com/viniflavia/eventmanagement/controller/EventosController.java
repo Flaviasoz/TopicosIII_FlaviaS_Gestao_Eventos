@@ -106,21 +106,25 @@ public class EventosController implements Serializable {
 
     @Transactional
     public void prepararEditarEvento(EventosEntity evento) {
-        // Criar uma nova instância para evitar problemas de referência
-        this.evento = new EventosEntity();
-        this.evento.setId(evento.getId());
-        this.evento.setTitulo(evento.getTitulo());
-        this.evento.setDescricao(evento.getDescricao());
-        this.evento.setDataInicio(evento.getDataInicio());
-        this.evento.setDataFim(evento.getDataFim());
-        this.evento.setLocal(evento.getLocal());
-        this.evento.setCriadoPor(evento.getCriadoPor());
-        this.evento.setDataCriacao(evento.getDataCriacao());
-        modoEdicao = true;
-        
-        System.out.println("Editando evento - ID: " + this.evento.getId() + 
-                          ", Título: " + this.evento.getTitulo() + 
-                          ", Local: " + this.evento.getLocal());
+        try {
+            if (evento != null && evento.getId() != null) {
+                // Buscar o evento diretamente do banco de dados para garantir dados atualizados
+                this.evento = em.find(EventosEntity.class, evento.getId());
+                if (this.evento == null) {
+                    // Se não encontrar no banco, usar o evento passado como parâmetro
+                    this.evento = evento;
+                }
+            } else {
+                this.evento = new EventosEntity();
+            }
+            modoEdicao = true;
+        } catch (Exception e) {
+            System.err.println("Erro ao preparar edição do evento: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o evento original
+            this.evento = evento != null ? evento : new EventosEntity();
+            modoEdicao = true;
+        }
     }
 
     @Transactional
@@ -229,35 +233,21 @@ public class EventosController implements Serializable {
 
     public void detalhesEvento(EventosEntity evento) {
         try {
-            System.out.println("=== EXIBINDO DETALHES DO EVENTO (EventosController) ===");
-            System.out.println("Evento recebido: " + (evento != null ? evento.getTitulo() : "null"));
-            System.out.println("ID do evento: " + (evento != null ? evento.getId() : "null"));
-            
-            if (evento == null) {
+            if (evento != null && evento.getId() != null) {
+                // Buscar o evento diretamente do banco de dados para garantir dados atualizados
+                this.eventoSelecionado = em.find(EventosEntity.class, evento.getId());
+                if (this.eventoSelecionado == null) {
+                    // Se não encontrar no banco, usar o evento passado como parâmetro
+                    this.eventoSelecionado = evento;
+                }
+            } else {
                 this.eventoSelecionado = null;
-                System.err.println("Evento recebido é nulo");
-                return;
             }
-            
-            // Criar uma nova instância para evitar problemas de referência (mesma lógica do prepararEditarEvento)
-            this.eventoSelecionado = new EventosEntity();
-            this.eventoSelecionado.setId(evento.getId());
-            this.eventoSelecionado.setTitulo(evento.getTitulo());
-            this.eventoSelecionado.setDescricao(evento.getDescricao());
-            this.eventoSelecionado.setDataInicio(evento.getDataInicio());
-            this.eventoSelecionado.setDataFim(evento.getDataFim());
-            this.eventoSelecionado.setLocal(evento.getLocal());
-            this.eventoSelecionado.setCriadoPor(evento.getCriadoPor());
-            this.eventoSelecionado.setDataCriacao(evento.getDataCriacao());
-            
-            System.out.println("Evento selecionado definido com sucesso - ID: " + eventoSelecionado.getId());
-            System.out.println("Título: " + eventoSelecionado.getTitulo());
-            System.out.println("Local: " + eventoSelecionado.getLocal());
-            System.out.println("=== FIM DOS DETALHES DO EVENTO (EventosController) ===");
         } catch (Exception e) {
-            System.err.println("Erro ao exibir detalhes do evento: " + e.getMessage());
+            System.err.println("Erro ao carregar detalhes do evento: " + e.getMessage());
             e.printStackTrace();
-            this.eventoSelecionado = null;
+            // Em caso de erro, usar o evento original
+            this.eventoSelecionado = evento;
         }
     }
 
@@ -275,6 +265,10 @@ public class EventosController implements Serializable {
             System.err.println("Erro ao buscar detalhes do evento por ID: " + e.getMessage());
             this.eventoSelecionado = null;
         }
+    }
+
+    public void limparEventoSelecionado() {
+        this.eventoSelecionado = null;
     }
 
     // Método para formatar data de início

@@ -94,6 +94,7 @@
                             <p:commandButton icon="pi pi-eye" 
                                            styleClass="p-button-rounded p-button-text p-button-sm"
                                            action="#{eventoController.detalhesEvento(evento)}"
+                                           update="@form"
                                            oncomplete="PF('detalhesDialog').show()" />
                             
                             <p:commandButton icon="pi pi-pencil" 
@@ -194,54 +195,64 @@
                  modal="true" 
                  showEffect="fade" 
                  hideEffect="fade"
-                 styleClass="dialog-details">
+                 styleClass="dialog-details"
+                 onHide="PF('limparEventoSelecionado').execute()">
             
             <div class="details-container">
-                <div class="detail-row">
-                    <span class="detail-label">ID:</span>
-                    <span class="detail-value">#{eventoController.eventoSelecionado.id}</span>
-                </div>
+                <h:panelGroup rendered="#{eventoController.eventoSelecionado.id != null}">
+                    <div class="detail-row">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{eventoController.eventoSelecionado.id}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Título:</span>
+                        <span class="detail-value">#{eventoController.eventoSelecionado.titulo}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Local:</span>
+                        <span class="detail-value">#{eventoController.eventoSelecionado.local}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data de Início:</span>
+                        <span class="detail-value">
+                            #{eventoController.formatarDataInicio(eventoController.eventoSelecionado.dataInicio)}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data de Fim:</span>
+                        <span class="detail-value">
+                            #{eventoController.formatarDataFim(eventoController.eventoSelecionado.dataFim)}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Descrição:</span>
+                        <span class="detail-value">#{eventoController.eventoSelecionado.descricao}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Criado Por:</span>
+                        <span class="detail-value">#{eventoController.getNomeUsuario(eventoController.eventoSelecionado.criadoPor)}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data de Criação:</span>
+                        <span class="detail-value">
+                            #{eventoController.formatarDataCriacao(eventoController.eventoSelecionado.dataCriacao)}
+                        </span>
+                    </div>
+                </h:panelGroup>
                 
-                <div class="detail-row">
-                    <span class="detail-label">Título:</span>
-                    <span class="detail-value">#{eventoController.eventoSelecionado.titulo}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Local:</span>
-                    <span class="detail-value">#{eventoController.eventoSelecionado.local}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data de Início:</span>
-                    <span class="detail-value">
-                        #{eventoController.formatarDataInicio(eventoController.eventoSelecionado.dataInicio)}
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data de Fim:</span>
-                    <span class="detail-value">
-                        #{eventoController.formatarDataFim(eventoController.eventoSelecionado.dataFim)}
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Descrição:</span>
-                    <span class="detail-value">#{eventoController.eventoSelecionado.descricao}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Criado Por:</span>
-                    <span class="detail-value">#{eventoController.getNomeUsuario(eventoController.eventoSelecionado.criadoPor)}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data de Criação:</span>
-                    <span class="detail-value">
-                        #{eventoController.formatarDataCriacao(eventoController.eventoSelecionado.dataCriacao)}
-                    </span>
-                </div>
+                <h:panelGroup rendered="#{eventoController.eventoSelecionado.id == null}">
+                    <div class="info-message">
+                        <i class="pi pi-info-circle"></i>
+                        <span>Nenhum evento selecionado para visualizar.</span>
+                    </div>
+                </h:panelGroup>
             </div>
             
             <f:facet name="footer">
@@ -256,6 +267,13 @@
 
         <!-- Mensagens -->
         <p:growl id="messages" showDetail="true" life="3000" />
+        
+        <!-- Botão invisível para limpar evento selecionado -->
+        <p:commandButton id="limparEventoSelecionado" 
+                        widgetVar="limparEventoSelecionado"
+                        action="#{eventoController.limparEventoSelecionado}"
+                        update="@form"
+                        style="display: none;" />
     </h:form>
 
     <style>

@@ -84,8 +84,25 @@ public class ParticipantesController implements Serializable {
     }
 
     public void prepararEditarParticipante(ParticipantesEntity participante) {
-        this.participante = participante;
-        modoEdicao = true;
+        try {
+            if (participante != null && participante.getId() != null) {
+                // Buscar o participante diretamente do banco de dados para garantir dados atualizados
+                this.participante = em.find(ParticipantesEntity.class, participante.getId());
+                if (this.participante == null) {
+                    // Se não encontrar no banco, usar o participante passado como parâmetro
+                    this.participante = participante;
+                }
+            } else {
+                this.participante = new ParticipantesEntity();
+            }
+            modoEdicao = true;
+        } catch (Exception e) {
+            System.err.println("Erro ao preparar edição do participante: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o participante original
+            this.participante = participante != null ? participante : new ParticipantesEntity();
+            modoEdicao = true;
+        }
     }
 
     @Transactional
@@ -197,7 +214,27 @@ public class ParticipantesController implements Serializable {
     }
 
     public void detalhesParticipante(ParticipantesEntity participante) {
-        this.participanteSelecionado = participante;
+        try {
+            if (participante != null && participante.getId() != null) {
+                // Buscar o participante diretamente do banco de dados para garantir dados atualizados
+                this.participanteSelecionado = em.find(ParticipantesEntity.class, participante.getId());
+                if (this.participanteSelecionado == null) {
+                    // Se não encontrar no banco, usar o participante passado como parâmetro
+                    this.participanteSelecionado = participante;
+                }
+            } else {
+                this.participanteSelecionado = new ParticipantesEntity();
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar detalhes do participante: " + e.getMessage());
+            e.printStackTrace();
+            // Em caso de erro, usar o participante original
+            this.participanteSelecionado = participante != null ? participante : new ParticipantesEntity();
+        }
+    }
+
+    public void limparParticipanteSelecionado() {
+        this.participanteSelecionado = new ParticipantesEntity();
     }
 
     public boolean isPresente(Integer inscricaoId) {

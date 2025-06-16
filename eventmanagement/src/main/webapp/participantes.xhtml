@@ -83,6 +83,7 @@
                             <p:commandButton icon="pi pi-eye" 
                                            styleClass="p-button-rounded p-button-text p-button-sm"
                                            action="#{participantesController.detalhesParticipante(participante)}"
+                                           update="@form"
                                            oncomplete="PF('detalhesDialog').show()" />
                             
                             <p:commandButton icon="pi pi-pencil" 
@@ -174,41 +175,51 @@
                  modal="true" 
                  showEffect="fade" 
                  hideEffect="fade"
-                 styleClass="dialog-details">
+                 styleClass="dialog-details"
+                 onHide="PF('limparParticipanteSelecionado').execute()">
             
             <div class="details-container">
-                <div class="detail-row">
-                    <span class="detail-label">ID:</span>
-                    <span class="detail-value">#{participantesController.participanteSelecionado.id}</span>
-                </div>
+                <h:panelGroup rendered="#{participantesController.participanteSelecionado.id != null}">
+                    <div class="detail-row">
+                        <span class="detail-label">ID:</span>
+                        <span class="detail-value">#{participantesController.participanteSelecionado.id}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Inscrição ID:</span>
+                        <span class="detail-value">#{participantesController.getInfoInscricao(participantesController.participanteSelecionado.inscricaoId)}</span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Presente:</span>
+                        <span class="detail-value">
+                            <p:tag value="#{participantesController.participanteSelecionado.presente ? 'Sim' : 'Não'}" 
+                                   styleClass="#{participantesController.participanteSelecionado.presente ? 'badge-presente' : 'badge-ausente'}" />
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Data de Presença:</span>
+                        <span class="detail-value">
+                            #{participantesController.formatarDataPresencaString(participantesController.participanteSelecionado.dataPresenca)}
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">
+                            <h:outputText value="Participante presente no evento" rendered="#{participantesController.participanteSelecionado.presente}" />
+                            <h:outputText value="Participante ausente do evento" rendered="#{!participantesController.participanteSelecionado.presente}" />
+                        </span>
+                    </div>
+                </h:panelGroup>
                 
-                <div class="detail-row">
-                    <span class="detail-label">Inscrição ID:</span>
-                    <span class="detail-value">#{participantesController.getInfoInscricao(participantesController.participanteSelecionado.inscricaoId)}</span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Presente:</span>
-                    <span class="detail-value">
-                        <p:tag value="#{participantesController.participanteSelecionado.presente ? 'Sim' : 'Não'}" 
-                               styleClass="#{participantesController.participanteSelecionado.presente ? 'badge-presente' : 'badge-ausente'}" />
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Data de Presença:</span>
-                    <span class="detail-value">
-                        #{participantesController.formatarDataPresencaString(participantesController.participanteSelecionado.dataPresenca)}
-                    </span>
-                </div>
-                
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value">
-                        <h:outputText value="Participante presente no evento" rendered="#{participantesController.participanteSelecionado.presente}" />
-                        <h:outputText value="Participante ausente do evento" rendered="#{!participantesController.participanteSelecionado.presente}" />
-                    </span>
-                </div>
+                <h:panelGroup rendered="#{participantesController.participanteSelecionado.id == null}">
+                    <div class="info-message">
+                        <i class="pi pi-info-circle"></i>
+                        <span>Nenhum participante selecionado para visualizar.</span>
+                    </div>
+                </h:panelGroup>
             </div>
             
             <f:facet name="footer">
@@ -223,6 +234,13 @@
 
         <!-- Mensagens -->
         <p:growl id="messages" showDetail="true" life="3000" />
+        
+        <!-- Botão invisível para limpar participante selecionado -->
+        <p:commandButton id="limparParticipanteSelecionado" 
+                        widgetVar="limparParticipanteSelecionado"
+                        action="#{participantesController.limparParticipanteSelecionado}"
+                        update="@form"
+                        style="display: none;" />
     </h:form>
 
     <style>

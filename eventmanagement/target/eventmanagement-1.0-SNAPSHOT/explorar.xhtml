@@ -262,6 +262,27 @@
                                          styleClass="status-nao-inscrito" />
                         </span>
                     </div>
+                    
+                    <div class="detail-row" rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id)}">
+                        <span class="detail-label">Presença:</span>
+                        <span class="detail-value">
+                            <h:outputText value="Presente" 
+                                         rendered="#{participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-presente" />
+                            <h:outputText value="Não Registrada" 
+                                         rendered="#{!participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-ausente" />
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row" rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) and participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}">
+                        <span class="detail-label">Observação:</span>
+                        <span class="detail-value">
+                            <small style="color: #6b7280; font-style: italic;">
+                                Após registrar presença, não é possível cancelar a inscrição.
+                            </small>
+                        </span>
+                    </div>
                 </p:outputPanel>
             </div>
             
@@ -276,9 +297,25 @@
                                        
                         <p:commandButton value="Cancelar Inscrição" 
                                        styleClass="p-button-outlined"
-                                       rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id)}"
+                                       rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) and !participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
                                        action="#{inscricoesController.cancelarInscricao(explorarController.eventoSelecionado.id)}"
                                        update="@form" />
+                                       
+                        <p:commandButton value="Cancelar Inscrição" 
+                                       styleClass="p-button-outlined"
+                                       disabled="true"
+                                       rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) and participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Registrar Presença" 
+                                       styleClass="p-button-info"
+                                       action="#{participantesController.registrarPresencaNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       update="@form"
+                                       rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) and !participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Presença Registrada" 
+                                       styleClass="p-button-info"
+                                       rendered="#{explorarController.isInscrito(explorarController.eventoSelecionado.id) and participantesController.isPresenteNoEvento(explorarController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       disabled="true" />
                                        
                         <p:commandButton value="Fechar" 
                                        icon="pi pi-times" 
@@ -514,6 +551,24 @@
         }
         
         .status-nao-inscrito {
+            color: #dc2626;
+            font-weight: 700;
+            background: #fee2e2;
+            border-radius: 6px;
+            padding: 0.2rem 0.7rem;
+            display: inline-block;
+        }
+        
+        .status-presente {
+            color: #059669;
+            font-weight: 700;
+            background: #d1fae5;
+            border-radius: 6px;
+            padding: 0.2rem 0.7rem;
+            display: inline-block;
+        }
+        
+        .status-ausente {
             color: #dc2626;
             font-weight: 700;
             background: #fee2e2;

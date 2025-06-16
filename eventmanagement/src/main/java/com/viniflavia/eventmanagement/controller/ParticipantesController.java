@@ -207,6 +207,82 @@ public class ParticipantesController implements Serializable {
         return !query.getResultList().isEmpty();
     }
 
+    /**
+     * Verifica se o usuário está presente em um evento específico
+     */
+    public boolean isPresenteNoEvento(Integer eventoId, Integer usuarioId) {
+        try {
+            TypedQuery<Long> query = em.createQuery(
+                "SELECT COUNT(p) FROM ParticipantesEntity p " +
+                "INNER JOIN InscricoesEntity i ON p.inscricaoId = i.id " +
+                "WHERE i.eventoId = :eventoId AND i.usuarioId = :usuarioId AND p.presente = true", 
+                Long.class);
+            query.setParameter("eventoId", eventoId);
+            query.setParameter("usuarioId", usuarioId);
+            return query.getSingleResult() > 0;
+        } catch (Exception e) {
+            System.err.println("Erro ao verificar presença no evento: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Registra presença do usuário em um evento específico
+     */
+    @Transactional
+    public void registrarPresencaNoEvento(Integer eventoId, Integer usuarioId) {
+        try {
+            // Buscar a inscrição do usuário no evento
+            TypedQuery<InscricoesEntity> queryInscricao = em.createQuery(
+                "SELECT i FROM InscricoesEntity i WHERE i.eventoId = :eventoId AND i.usuarioId = :usuarioId", 
+                InscricoesEntity.class);
+            queryInscricao.setParameter("eventoId", eventoId);
+            queryInscricao.setParameter("usuarioId", usuarioId);
+            
+            List<InscricoesEntity> inscricoes = queryInscricao.getResultList();
+            
+            if (inscricoes.isEmpty()) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Você precisa estar inscrito no evento para registrar presença!"));
+                return;
+            }
+            
+            InscricoesEntity inscricao = inscricoes.get(0);
+            
+            // Verificar se já existe participante para esta inscrição
+            TypedQuery<ParticipantesEntity> queryParticipante = em.createQuery(
+                "SELECT p FROM ParticipantesEntity p WHERE p.inscricaoId = :inscricaoId", 
+                ParticipantesEntity.class);
+            queryParticipante.setParameter("inscricaoId", inscricao.getId());
+            
+            List<ParticipantesEntity> participantes = queryParticipante.getResultList();
+            
+            if (participantes.isEmpty()) {
+                participante.setInscricaoId(inscricao.getId());
+                participante.setPresente(true);
+                participante.setDataPresenca(LocalDateTime.now());
+                em.persist(participante);
+                
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Presença registrada com sucesso!"));
+            } else {
+                ParticipantesEntity participanteExistente = participantes.get(0);
+                participanteExistente.setPresente(true);
+                participanteExistente.setDataPresenca(LocalDateTime.now());
+                em.merge(participanteExistente);
+                
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_INFO, "Sucesso", "Presença atualizada com sucesso!"));
+            }
+            participante = new ParticipantesEntity();
+        } catch (Exception e) {
+            System.err.println("Erro ao registrar presença no evento: " + e.getMessage());
+            e.printStackTrace();
+            FacesContext.getCurrentInstance().addMessage(null,
+                new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Erro ao registrar presença: " + e.getMessage()));
+        }
+    }
+
     // Método para obter informações da inscrição
     public String getInfoInscricao(Integer inscricaoId) {
         if (inscricaoId == null) {

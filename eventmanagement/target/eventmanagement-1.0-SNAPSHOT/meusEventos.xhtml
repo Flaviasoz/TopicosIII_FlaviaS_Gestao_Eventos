@@ -41,44 +41,48 @@
                 </div>
 
                 <div class="events-grid" id="eventosGrid">
-                    <ui:repeat value="#{inscricoesController.listarEventosInscritos(loginController.usuario.codigo)}" var="evento">
-                        <div class="event-card p-shadow-2">
-                            <div class="event-date-badge">
-                                <span class="event-day">
-                                    <h:outputText value="#{eventoController.formatarDiaData(evento.dataInicio)}" />
-                                </span>
-                                <span class="event-month">
-                                    <h:outputText value="#{eventoController.formatarMesData(evento.dataInicio)}" />
-                                </span>
+                    <h:panelGroup rendered="#{not empty inscricoesController.listarTodosEventosInscritos(loginController.usuario.codigo)}">
+                        <ui:repeat value="#{inscricoesController.listarTodosEventosInscritos(loginController.usuario.codigo)}" var="evento">
+                            <div class="event-card p-shadow-2">
+                                <div class="event-date-badge">
+                                    <span class="event-day">
+                                        <h:outputText value="#{eventoController.formatarDiaData(evento.dataInicio)}" />
+                                    </span>
+                                    <span class="event-month">
+                                        <h:outputText value="#{eventoController.formatarMesData(evento.dataInicio)}" />
+                                    </span>
+                                </div>
+                                <div class="event-details">
+                                    <h3 class="event-title">#{evento.titulo}</h3>
+                                    <p class="event-location"><i class="pi pi-map-marker"></i> #{evento.local}</p>
+                                    <p class="event-time">
+                                        <i class="pi pi-clock"></i>
+                                        <h:outputText value="#{eventoController.formatarHorario(evento.dataInicio)}" />
+                                        -
+                                        <h:outputText value="#{eventoController.formatarHorario(evento.dataFim)}" />
+                                    </p>
+                                </div>
+                                <div class="event-actions">
+                                    <p:commandButton icon="pi pi-ellipsis-v" 
+                                                   styleClass="p-button-rounded p-button-text"
+                                                   action="#{eventoController.detalhesEvento(evento)}"
+                                                   update="@form"
+                                                   oncomplete="PF('detalhesDialog').show()" />
+                                </div>
                             </div>
-                            <div class="event-details">
-                                <h3 class="event-title">#{evento.titulo}</h3>
-                                <p class="event-location"><i class="pi pi-map-marker"></i> #{evento.local}</p>
-                                <p class="event-time">
-                                    <i class="pi pi-clock"></i>
-                                    <h:outputText value="#{eventoController.formatarHorario(evento.dataInicio)}" />
-                                    -
-                                    <h:outputText value="#{eventoController.formatarHorario(evento.dataFim)}" />
-                                </p>
-                            </div>
-                            <div class="event-actions">
-                                <p:commandButton icon="pi pi-ellipsis-v" 
-                                               styleClass="p-button-rounded p-button-text"
-                                               action="#{eventoController.detalhesEvento(evento)}"
-                                               update="@form"
-                                               oncomplete="PF('detalhesDialog').show()" />
-                            </div>
-                        </div>
-                    </ui:repeat>
+                        </ui:repeat>
+                    </h:panelGroup>
                     
-                    <div class="no-events-message" rendered="#{empty inscricoesController.listarEventosInscritos(loginController.usuario.codigo)}">
-                        <i class="pi pi-calendar no-events-icon"></i>
-                        <p class="no-events-text">Você ainda não está inscrito em nenhum evento</p>
-                        <p:commandButton value="Explorar Eventos" 
-                                       icon="pi pi-search" 
-                                       styleClass="p-button-outlined"
-                                       action="explorar.xhtml?faces-redirect=true" />
-                    </div>
+                    <h:panelGroup rendered="#{empty inscricoesController.listarTodosEventosInscritos(loginController.usuario.codigo)}">
+                        <div class="no-events-message">
+                            <i class="pi pi-calendar no-events-icon"></i>
+                            <p class="no-events-text">Você ainda não está inscrito em nenhum evento</p>
+                            <p:commandButton value="Explorar Eventos" 
+                                           icon="pi pi-search" 
+                                           styleClass="p-button-outlined"
+                                           action="explorar.xhtml?faces-redirect=true" />
+                        </div>
+                    </h:panelGroup>
                 </div>
             </div>
 
@@ -140,6 +144,27 @@
                                          styleClass="status-inscrito" />
                         </span>
                     </div>
+                    
+                    <div class="detail-row">
+                        <span class="detail-label">Presença:</span>
+                        <span class="detail-value">
+                            <h:outputText value="Presente" 
+                                         rendered="#{participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-presente" />
+                            <h:outputText value="Não Registrada" 
+                                         rendered="#{!participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-ausente" />
+                        </span>
+                    </div>
+                    
+                    <div class="detail-row" rendered="#{participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}">
+                        <span class="detail-label">Observação:</span>
+                        <span class="detail-value">
+                            <small style="color: #6b7280; font-style: italic;">
+                                Após registrar presença, não é possível cancelar a inscrição.
+                            </small>
+                        </span>
+                    </div>
                 </div>
                 
                 <f:facet name="footer">
@@ -147,7 +172,25 @@
                         <p:commandButton value="Cancelar Inscrição" 
                                        styleClass="p-button-outlined"
                                        action="#{inscricoesController.cancelarInscricao(eventoController.eventoSelecionado.id)}"
-                                       update="@form" />
+                                       update="@form"
+                                       rendered="#{!participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Cancelar Inscrição" 
+                                       styleClass="p-button-outlined"
+                                       disabled="true"
+                                       rendered="#{participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Registrar Presença" 
+                                       styleClass="p-button-info"
+                                       action="#{participantesController.registrarPresencaNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       update="@form"
+                                       rendered="#{!participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Presença Registrada" 
+                                       styleClass="p-button-info"
+                                       rendered="#{participantesController.isPresenteNoEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       disabled="true" />
+                                       
                         <p:commandButton value="Fechar" 
                                        icon="pi pi-times" 
                                        styleClass="p-button-secondary"
@@ -344,6 +387,16 @@
             
             .status-inscrito {
                 color: #059669;
+                font-weight: 600;
+            }
+            
+            .status-presente {
+                color: #059669;
+                font-weight: 600;
+            }
+            
+            .status-ausente {
+                color: #dc2626;
                 font-weight: 600;
             }
         </style>

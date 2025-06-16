@@ -76,6 +76,10 @@ public class FeedbackController implements Serializable {
 
     public void prepararNovoFeedback() {
         feedback = new FeedbackEntity();
+        Integer usuarioId = getUsuarioLogadoId();
+        if (usuarioId != null) {
+            feedback.setUsuarioId(usuarioId);
+        }
         modoEdicao = false;
     }
 
@@ -159,11 +163,14 @@ public class FeedbackController implements Serializable {
                 return;
             }
             
-            if (feedback.getUsuarioId() == null || feedback.getUsuarioId() <= 0) {
-                FacesContext.getCurrentInstance().addMessage("mainForm:usuarioId",
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "ID do usuário é obrigatório e deve ser maior que zero!"));
+            // Definir automaticamente o usuário logado
+            Integer usuarioId = getUsuarioLogadoId();
+            if (usuarioId == null) {
+                FacesContext.getCurrentInstance().addMessage(null,
+                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Usuário não logado!"));
                 return;
             }
+            feedback.setUsuarioId(usuarioId);
             
             if (feedback.getComentario() == null || feedback.getComentario().trim().isEmpty()) {
                 FacesContext.getCurrentInstance().addMessage("mainForm:comentario",
@@ -184,10 +191,10 @@ public class FeedbackController implements Serializable {
                 return;
             }
             
-            // Verificar se o usuário existe
-            if (!usuarioExiste(feedback.getUsuarioId())) {
-                FacesContext.getCurrentInstance().addMessage("mainForm:usuarioId",
-                    new FacesMessage(FacesMessage.SEVERITY_ERROR, "Erro", "Usuário com ID " + feedback.getUsuarioId() + " não encontrado!"));
+            // Verificar se o usuário já enviou feedback para este evento
+            if (!modoEdicao && jaEnviouFeedback(feedback.getEventoId(), usuarioId)) {
+                FacesContext.getCurrentInstance().addMessage("mainForm:eventoId",
+                    new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Você já enviou feedback para este evento!"));
                 return;
             }
             
@@ -438,5 +445,144 @@ public class FeedbackController implements Serializable {
             System.err.println("Erro ao buscar usuário: " + e.getMessage());
             return "Usuário ID: " + usuarioId + " (erro)";
         }
+    }
+
+    /**
+     * Lista apenas os feedbacks do usuário logado
+     */
+    public List<FeedbackEntity> listarFeedbacksUsuarioLogado() {
+        Integer usuarioId = getUsuarioLogadoId();
+        if (usuarioId != null) {
+            return listarPorUsuario(usuarioId);
+        }
+        return new ArrayList<>();
+    }
+
+    /**
+     * Lista eventos em que o usuário logado marcou presença
+     */
+    public List<EventosEntity> listarEventosComPresenca() {
+        Integer usuarioId = getUsuarioLogadoId();
+        if (usuarioId == null) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            TypedQuery<EventosEntity> query = em.createQuery(
+                "SELECT DISTINCT e FROM EventosEntity e " +
+                "INNER JOIN InscricoesEntity i ON e.id = i.eventoId " +
+                "INNER JOIN ParticipantesEntity p ON i.id = p.inscricaoId " +
+                "WHERE i.usuarioId = :usuarioId " +
+                "AND p.presente = true " +
+                "ORDER BY e.dataInicio DESC", 
+                EventosEntity.class);
+            
+            query.setParameter("usuarioId", usuarioId);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar eventos com presença: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Obtém o ID do usuário logado
+     */
+    private Integer getUsuarioLogadoId() {
+        try {
+            FacesContext facesContext = FacesContext.getCurrentInstance();
+            if (facesContext != null && facesContext.getExternalContext() != null) {
+                jakarta.servlet.http.HttpSession session = (jakarta.servlet.http.HttpSession) 
+                    facesContext.getExternalContext().getSession(false);
+                if (session != null) {
+                    Object usuarioLogado = session.getAttribute("usuarioLogado");
+                    if (usuarioLogado != null) {
+                        return ((com.viniflavia.eventmanagement.entity.UsuarioEntity) usuarioLogado).getCodigo();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Erro ao obter usuário logado: " + e.getMessage());
+        }
+        return null;
+    }
+
+    /**
+     * Obtém a lista de eventos em que o usuário marcou presença para o select
+     */
+    public List<EventosEntity> getListaEventosComPresenca() {
+        return listarEventosComPresenca();
+    }
+
+    /**
+     * Verifica se o usuário pode enviar feedback para um evento específico
+     * (se participou do evento e ainda não enviou feedback)
+     */
+    public boolean podeEnviarFeedback(Integer eventoId) {
+        Integer usuarioId = getUsuarioLogadoId();
+        if (usuarioId == null || eventoId == null) {
+            return false;
+        }
+        
+        try {
+            // Verificar se participou do evento
+            TypedQuery<Long> queryPresenca = em.createQuery(
+                "SELECT COUNT(p) FROM ParticipantesEntity p " +
+                "INNER JOIN InscricoesEntity i ON p.inscricaoId = i.id " +
+                "WHERE i.usuarioId = :usuarioId AND i.eventoId = :eventoId AND p.presente = true", 
+                Long.class);
+            queryPresenca.setParameter("usuarioId", usuarioId);
+            queryPresenca.setParameter("eventoId", eventoId);
+            
+            boolean participou = queryPresenca.getSingleResult() > 0;
+            
+            // Verificar se já enviou feedback
+            boolean jaEnviou = jaEnviouFeedback(eventoId, usuarioId);
+            
+            return participou && !jaEnviou;
+        } catch (Exception e) {
+            System.err.println("Erro ao verificar se pode enviar feedback: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Lista eventos em que o usuário pode enviar feedback
+     * (participou do evento mas ainda não enviou feedback)
+     */
+    public List<EventosEntity> listarEventosParaFeedback() {
+        Integer usuarioId = getUsuarioLogadoId();
+        if (usuarioId == null) {
+            return new ArrayList<>();
+        }
+        
+        try {
+            TypedQuery<EventosEntity> query = em.createQuery(
+                "SELECT DISTINCT e FROM EventosEntity e " +
+                "INNER JOIN InscricoesEntity i ON e.id = i.eventoId " +
+                "INNER JOIN ParticipantesEntity p ON i.id = p.inscricaoId " +
+                "WHERE i.usuarioId = :usuarioId " +
+                "AND p.presente = true " +
+                "AND e.id NOT IN (" +
+                "    SELECT f.eventoId FROM FeedbackEntity f WHERE f.usuarioId = :usuarioId" +
+                ") " +
+                "ORDER BY e.dataInicio DESC", 
+                EventosEntity.class);
+            
+            query.setParameter("usuarioId", usuarioId);
+            return query.getResultList();
+        } catch (Exception e) {
+            System.err.println("Erro ao buscar eventos para feedback: " + e.getMessage());
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
+    /**
+     * Obtém a lista de eventos em que o usuário pode enviar feedback para o select
+     */
+    public List<EventosEntity> getListaEventosParaFeedback() {
+        return listarEventosParaFeedback();
     }
 } 

@@ -22,6 +22,7 @@
 
 <h:body class="p-component">
     <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
+    <f:event type="preRenderView" listener="#{notificacoesUsuarioController.inicializar}" />
 
     <h:form id="mainForm">
         <!-- Navbar Componente -->

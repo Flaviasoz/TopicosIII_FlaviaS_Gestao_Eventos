@@ -23,6 +23,7 @@
 <h:body class="p-component">
     <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
     <f:event type="preRenderView" listener="#{inscricoesController.inicializar}" />
+    <f:event type="preRenderView" listener="#{notificacoesUsuarioController.inicializar}" />
 
     <h:form id="mainForm">
         <!-- Navbar Componente -->
@@ -283,36 +284,41 @@
                     </span>
                 </div>
                 
-                <div class="detail-row">
-                    <span class="detail-label">Status:</span>
-                    <span class="detail-value">
-                        <h:outputText value="Inscrito" 
-                                     rendered="#{inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                     styleClass="status-inscrito" />
-                        <h:outputText value="Não Inscrito" 
-                                     rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                     styleClass="status-nao-inscrito" />
-                    </span>
-                </div>
+                <p:outputPanel id="detalhesDialogStatus">
+                    <div class="detail-row">
+                        <span class="detail-label">Status:</span>
+                        <span class="detail-value">
+                            <h:outputText value="Inscrito" 
+                                         rendered="#{inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-inscrito" />
+                            <h:outputText value="Não Inscrito" 
+                                         rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                         styleClass="status-nao-inscrito" />
+                        </span>
+                    </div>
+                </p:outputPanel>
             </div>
             
             <f:facet name="footer">
-                <div class="dialog-footer">
-                    <p:commandButton value="Participar" 
-                                   styleClass="p-button-primary"
-                                   action="#{inscricoesController.inscreverEmEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                   rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
-                                   
-                    <p:commandButton value="Já Inscrito" 
-                                   styleClass="p-button-success"
-                                   rendered="#{inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
-                                   disabled="true" />
-                                   
-                    <p:commandButton value="Fechar" 
-                                   icon="pi pi-times" 
-                                   styleClass="p-button-secondary"
-                                   onclick="PF('detalhesDialog').hide()" />
-                </div>
+                <p:outputPanel id="detalhesDialogFooter">
+                    <div class="dialog-footer">
+                        <p:commandButton value="Participar" 
+                                       styleClass="p-button-primary"
+                                       action="#{inscricoesController.inscreverEmEvento(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       update="@form:detalhesDialogFooter @form:detalhesDialogStatus"
+                                       rendered="#{!inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}" />
+                                       
+                        <p:commandButton value="Já Inscrito" 
+                                       styleClass="p-button-success"
+                                       rendered="#{inscricoesController.isInscrito(eventoController.eventoSelecionado.id, loginController.usuario.codigo)}"
+                                       disabled="true" />
+                                       
+                        <p:commandButton value="Fechar" 
+                                       icon="pi pi-times" 
+                                       styleClass="p-button-secondary"
+                                       onclick="PF('detalhesDialog').hide()" />
+                    </div>
+                </p:outputPanel>
             </f:facet>
         </p:dialog>
 

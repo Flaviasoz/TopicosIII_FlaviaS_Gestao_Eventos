@@ -172,8 +172,15 @@
 
 .event-actions {
     display: flex;
-    gap: 0.75rem;
     margin-top: 1.5rem;
+}
+
+.event-actions > * {
+    margin-right: 0.5rem;
+}
+
+.event-actions > *:last-child {
+    margin-right: 0;
 }
 
 .event-actions .p-button {

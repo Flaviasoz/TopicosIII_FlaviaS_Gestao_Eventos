@@ -8,32 +8,247 @@
       xmlns:ui="jakarta.faces.facelets">
 
     <ui:composition>
-        <p:menubar styleClass="app-navbar">
-            <div class="navbar-container">
+        <nav class="custom-navbar">
+            <div class="navbar-content">
                 <div class="navbar-left">
                     <div class="app-logo">
-                        <i class="pi pi-calendar" style="font-size: 1.5rem; color: #6366F1;"></i>
+                        <i class="pi pi-calendar"></i>
                         <span>EventHub</span>
                     </div>
-                    
-                    <p:menuitem value="Home" icon="pi pi-home" url="home.xhtml" styleClass="nav-item #{param.activePage == 'home' ? 'active' : ''}" />
-                    <p:menuitem value="Usuários" icon="pi pi-users" url="usuarios.xhtml" styleClass="nav-item #{param.activePage == 'usuarios' ? 'active' : ''}" />
-                    <p:menuitem value="Eventos" icon="pi pi-calendar" url="eventos.xhtml" styleClass="nav-item #{param.activePage == 'eventos' ? 'active' : ''}" />
-                    <p:menuitem value="Inscrições" icon="pi pi-ticket" url="inscricoes.xhtml" styleClass="nav-item #{param.activePage == 'inscricoes' ? 'active' : ''}" />
-                    <p:menuitem value="Participantes" icon="pi pi-id-card" url="participantes.xhtml" styleClass="nav-item #{param.activePage == 'participantes' ? 'active' : ''}" />
-                    <p:menuitem value="Notificações" icon="pi pi-bell" url="notificacoes.xhtml" styleClass="nav-item #{param.activePage == 'notificacoes' ? 'active' : ''}" />
-                    <p:menuitem value="Feedback" icon="pi pi-star" url="feedback.xhtml" styleClass="nav-item #{param.activePage == 'feedback' ? 'active' : ''}" />
+                    <div class="nav-menu">
+                        <a href="home.xhtml" class="nav-item #{param.activePage == 'home' ? 'active' : ''}"><i class="pi pi-home"></i> Home</a>
+                        <a href="usuarios.xhtml" class="nav-item #{param.activePage == 'usuarios' ? 'active' : ''}"><i class="pi pi-users"></i> Usuários</a>
+                        <a href="eventos.xhtml" class="nav-item #{param.activePage == 'eventos' ? 'active' : ''}"><i class="pi pi-calendar"></i> Eventos</a>
+                        <a href="inscricoes.xhtml" class="nav-item #{param.activePage == 'inscricoes' ? 'active' : ''}"><i class="pi pi-ticket"></i> Inscrições</a>
+                        <a href="participantes.xhtml" class="nav-item #{param.activePage == 'participantes' ? 'active' : ''}"><i class="pi pi-id-card"></i> Participantes</a>
+                        <a href="feedback.xhtml" class="nav-item #{param.activePage == 'feedback' ? 'active' : ''}"><i class="pi pi-star"></i> Feedback</a>
+                    </div>
                 </div>
-                
                 <div class="navbar-right">
-                    <p:submenu label="#{loginController.usuario.nome}" icon="pi pi-user" styleClass="user-menu">
-                        <p:menuitem value="Sair" icon="pi pi-sign-out" action="#{loginController.logout}" ajax="false" />
-                    </p:submenu>
-                    <div class="user-avatar">
-                        <i class="pi pi-user" style="font-size: 1.25rem;"></i>
+                    <div class="notifications-wrapper">
+                        <a href="minhasNotificacoes.xhtml" class="notification-icon">
+                            <i class="pi pi-bell"></i>
+                            <h:panelGroup rendered="#{notificacoesUsuarioController.quantidadeNotificacoesNaoLidas > 0}" styleClass="notification-badge">
+                                <span>#{notificacoesUsuarioController.quantidadeNotificacoesNaoLidas}</span>
+                            </h:panelGroup>
+                        </a>
+                    </div>
+                    <div class="user-dropdown" id="userDropdown" onmouseenter="showDropdown()" onmouseleave="hideDropdownWithDelay()">
+                        <div class="user-info">
+                            <div class="user-avatar">
+                                <i class="pi pi-user"></i>
+                            </div>
+                            <div class="user-name">#{loginController.usuario.nome}</div>
+                        </div>
+                        <div class="dropdown-content" id="dropdownContent">
+                            
+                        </div>
                     </div>
                 </div>
             </div>
-        </p:menubar>
+        </nav>
+        <style>
+            .custom-navbar {
+                width: 100%;
+                background: #fff;
+                box-shadow: 0 2px 8px rgba(99,102,241,0.07);
+                border-bottom: 1px solid #e5e7eb;
+                padding: 0 2rem;
+                position: sticky;
+                top: 0;
+                z-index: 100;
+            }
+            .navbar-content {
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                height: 64px;
+                max-width: 1400px;
+                margin: 0 auto;
+            }
+            .navbar-left {
+                display: flex;
+                align-items: center;
+                gap: 2.5rem;
+            }
+            .app-logo {
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-size: 1.3rem;
+                font-weight: 700;
+                color: #6366F1;
+            }
+            .app-logo i {
+                font-size: 1.7rem;
+            }
+            .nav-menu {
+                display: flex;
+                align-items: center;
+                gap: 1.2rem;
+            }
+            .nav-item {
+                display: flex;
+                align-items: center;
+                gap: 0.4rem;
+                color: #374151;
+                font-weight: 500;
+                text-decoration: none;
+                padding: 0.4rem 0.9rem;
+                border-radius: 6px;
+                transition: background 0.2s, color 0.2s;
+            }
+            .nav-item.active, .nav-item:hover {
+                background: #f3f4f6;
+                color: #6366F1;
+            }
+            .navbar-right {
+                display: flex;
+                align-items: center;
+                gap: 2.2rem;
+                margin-left: auto;
+            }
+            .notifications-wrapper {
+                position: relative;
+            }
+            .notification-icon {
+                position: relative;
+                color: #6366F1;
+                font-size: 1.3rem;
+                margin-right: 0.5rem;
+                text-decoration: none;
+                transition: color 0.2s;
+            }
+            .notification-icon:hover {
+                color: #4338ca;
+            }
+            .notification-badge {
+                position: absolute;
+                top: -7px;
+                right: -7px;
+                background: #ef4444;
+                color: white;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 0.75rem;
+                font-weight: 600;
+                min-width: 18px;
+                animation: pulse-notification 2s infinite;
+            }
+            @keyframes pulse-notification {
+                0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+                70% { box-shadow: 0 0 0 6px rgba(239, 68, 68, 0); }
+                100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+            }
+            .user-dropdown {
+                position: relative;
+                display: flex;
+                align-items: center;
+                gap: 0.7rem;
+                cursor: pointer;
+                height: 100%;
+            }
+            .user-info {
+                display: flex;
+                align-items: center;
+                gap: 0.7rem;
+                height: 100%;
+                padding: 0.2rem 0.7rem 0.2rem 0.7rem;
+                border-radius: 999px;
+                transition: background 0.2s;
+            }
+            .user-dropdown:hover .user-info,
+            .user-dropdown.show-dropdown .user-info {
+                background: #f3f4f6;
+            }
+            .user-avatar {
+                width: 36px;
+                height: 36px;
+                border-radius: 50%;
+                background: #f3f4f6;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #6366F1;
+                font-size: 1.3rem;
+            }
+            .user-name {
+                font-weight: 500;
+                color: #374151;
+                max-width: 180px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+            }
+            .user-dropdown .dropdown-content {
+                display: none;
+                position: absolute;
+                top: 110%;
+                right: 0;
+                background: #fff;
+                min-width: 170px;
+                box-shadow: 0 8px 24px rgba(99,102,241,0.13);
+                border-radius: 12px;
+                z-index: 10;
+                padding: 0.5rem 0;
+                transition: opacity 0.18s, transform 0.18s;
+                opacity: 0;
+                pointer-events: none;
+                transform: translateY(10px);
+            }
+            .user-dropdown.show-dropdown .dropdown-content {
+                display: block;
+                opacity: 1;
+                pointer-events: auto;
+                transform: translateY(0);
+            }
+            .dropdown-content a {
+                display: flex;
+                align-items: center;
+                gap: 0.7rem;
+                color: #374151;
+                padding: 0.85rem 1.3rem;
+                text-decoration: none;
+                font-weight: 500;
+                border-radius: 8px;
+                transition: background 0.18s, color 0.18s;
+                font-size: 1rem;
+                margin: 0.1rem 0.2rem;
+            }
+            .dropdown-content a:hover {
+                background: #6366F1;
+                color: #fff;
+            }
+            @media (max-width: 900px) {
+                .navbar-content {
+                    flex-direction: column;
+                    height: auto;
+                    gap: 1rem;
+                    padding: 0.5rem 0;
+                }
+                .navbar-left, .navbar-right {
+                    gap: 1.2rem;
+                }
+                .nav-menu {
+                    gap: 0.7rem;
+                }
+            }
+        </style>
+        <script>
+        let dropdownTimeout;
+        function showDropdown() {
+            clearTimeout(dropdownTimeout);
+            document.getElementById('userDropdown').classList.add('show-dropdown');
+        }
+        function hideDropdownWithDelay() {
+            dropdownTimeout = setTimeout(() => {
+                document.getElementById('userDropdown').classList.remove('show-dropdown');
+            }, 180);
+        }
+        </script>
     </ui:composition>
 </html> 

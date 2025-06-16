@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="jakarta.faces.facelets">
+
+<h:head>
+    <f:facet name="first">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+        <meta name="theme-color" content="#6366F1" />
+    </f:facet>
+    <title>Minhas Notificações - EventHub</title>
+
+    <h:outputStylesheet name="css/home.css" library="eventhub-layout" />
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet" />
+    
+    <style>
+        .notifications-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #f3f4f6;
+        }
+        
+        .notifications-title {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        
+        .notifications-title i {
+            color: #6366F1;
+        }
+        
+        .mark-all-read-btn {
+            background: linear-gradient(135deg, #6366F1 0%, #8B5CF6 100%);
+            border: none;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(99, 102, 241, 0.1);
+        }
+        
+        .mark-all-read-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+        }
+        
+        .notification-item {
+            background: white;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+            position: relative;
+        }
+        
+        .notification-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        
+        .notification-item.unread {
+            border-left-color: #6366F1;
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+        }
+        
+        .notification-item.unread::before {
+            content: '';
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            width: 8px;
+            height: 8px;
+            background: #6366F1;
+            border-radius: 50%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(99, 102, 241, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(99, 102, 241, 0);
+            }
+        }
+        
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.75rem;
+        }
+        
+        .notification-title {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin: 0;
+            flex: 1;
+        }
+        
+        .notification-time {
+            font-size: 0.875rem;
+            color: #6b7280;
+            white-space: nowrap;
+            margin-left: 1rem;
+        }
+        
+        .notification-message {
+            color: #4b5563;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+        }
+        
+        .notification-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+        
+        .mark-read-btn {
+            background: #10b981;
+            border: none;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .mark-read-btn:hover {
+            background: #059669;
+            transform: translateY(-1px);
+        }
+        
+        .empty-notifications {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+        
+        .empty-notifications i {
+            font-size: 4rem;
+            color: #d1d5db;
+            margin-bottom: 1rem;
+        }
+        
+        .empty-notifications h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+        
+        .empty-notifications p {
+            font-size: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stats-container {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+            flex: 1;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #6366F1;
+            margin-bottom: 0.5rem;
+        }
+        
+        .stat-label {
+            font-size: 0.875rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+        
+        .filter-tabs {
+            margin-bottom: 2rem;
+        }
+        
+        .filter-tab {
+            background: transparent;
+            border: 2px solid #e5e7eb;
+            color: #6b7280;
+            padding: 0.75rem 1.5rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            margin-right: 0.5rem;
+        }
+        
+        .filter-tab.active {
+            background: #6366F1;
+            border-color: #6366F1;
+            color: white;
+        }
+        
+        .filter-tab:hover {
+            border-color: #6366F1;
+            color: #6366F1;
+        }
+        
+        .filter-tab.active:hover {
+            color: white;
+        }
+    </style>
+</h:head>
+
+<h:body class="p-component">
+    <f:event type="preRenderView" listener="#{loginController.redirectIfNotLoggedIn}" />
+    <f:event type="preRenderView" listener="#{notificacoesUsuarioController.inicializar}" />
+
+    <h:form id="mainForm">
+        <!-- Navbar Componente -->
+        <ui:include src="/WEB-INF/navbar.xhtml">
+            <ui:param name="activePage" value="minhasNotificacoes" />
+        </ui:include>
+
+        <!-- Conteúdo Principal -->
+        <div class="main-content-container">
+            <div class="notifications-container">
+                <!-- Header -->
+                <div class="notifications-header">
+                    <h1 class="notifications-title">
+                        <i class="pi pi-bell"></i>
+                        Minhas Notificações
+                    </h1>
+                    
+                    <h:panelGroup rendered="#{notificacoesUsuarioController.quantidadeNotificacoesNaoLidas > 0}">
+                        <p:commandButton value="Marcar Todas como Lidas" 
+                                       icon="pi pi-check-circle" 
+                                       styleClass="mark-all-read-btn"
+                                       action="#{notificacoesUsuarioController.marcarTodasComoLidas}"
+                                       update="@form" />
+                    </h:panelGroup>
+                </div>
+
+                <!-- Estatísticas -->
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-number">#{notificacoesUsuarioController.quantidadeNotificacoesNaoLidas}</div>
+                        <div class="stat-label">Não Lidas</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">#{notificacoesUsuarioController.notificacoesUsuario.size()}</div>
+                        <div class="stat-label">Total</div>
+                    </div>
+                </div>
+
+                <!-- Filtros -->
+                <div class="filter-tabs">
+                    <p:commandButton value="Todas" 
+                                   styleClass="filter-tab #{param.filter == null or param.filter == 'todas' ? 'active' : ''}"
+                                   action="minhasNotificacoes.xhtml?faces-redirect=true&amp;filter=todas" />
+                    
+                    <p:commandButton value="Não Lidas" 
+                                   styleClass="filter-tab #{param.filter == 'naoLidas' ? 'active' : ''}"
+                                   action="minhasNotificacoes.xhtml?faces-redirect=true&amp;filter=naoLidas" />
+                </div>
+
+                <!-- Lista de Notificações -->
+                <h:panelGroup rendered="#{not empty notificacoesUsuarioController.notificacoesUsuario}">
+                    <ui:repeat value="#{param.filter == 'naoLidas' ? notificacoesUsuarioController.notificacoesNaoLidas : notificacoesUsuarioController.notificacoesUsuario}" var="notificacao">
+                        <div class="notification-item #{not notificacao.lida ? 'unread' : ''}">
+                            <div class="notification-header">
+                                <h3 class="notification-title">#{notificacao.titulo}</h3>
+                                <span class="notification-time">#{notificacoesUsuarioController.getTempoRelativo(notificacao.enviadaEm)}</span>
+                            </div>
+                            
+                            <p class="notification-message">#{notificacao.mensagem}</p>
+                            
+                            <div class="notification-actions">
+                                <h:panelGroup rendered="#{not notificacao.lida}">
+                                    <p:commandButton value="Marcar como Lida" 
+                                                   icon="pi pi-check" 
+                                                   styleClass="mark-read-btn"
+                                                   action="#{notificacoesUsuarioController.marcarComoLida(notificacao)}"
+                                                   update="@form" />
+                                </h:panelGroup>
+                            </div>
+                        </div>
+                    </ui:repeat>
+                </h:panelGroup>
+
+                <!-- Mensagem de nenhuma notificação -->
+                <h:panelGroup rendered="#{empty notificacoesUsuarioController.notificacoesUsuario}">
+                    <div class="empty-notifications">
+                        <i class="pi pi-bell"></i>
+                        <h3>Nenhuma notificação</h3>
+                        <p>Você não possui notificações no momento.</p>
+                        <p:commandButton value="Voltar ao Início" 
+                                       icon="pi pi-home" 
+                                       styleClass="p-button-outlined"
+                                       action="home.xhtml?faces-redirect=true" />
+                    </div>
+                </h:panelGroup>
+
+                <!-- Mensagem de nenhuma notificação não lida -->
+                <h:panelGroup rendered="#{param.filter == 'naoLidas' and empty notificacoesUsuarioController.notificacoesNaoLidas and not empty notificacoesUsuarioController.notificacoesUsuario}">
+                    <div class="empty-notifications">
+                        <i class="pi pi-check-circle"></i>
+                        <h3>Todas as notificações foram lidas!</h3>
+                        <p>Você não possui notificações não lidas no momento.</p>
+                        <p:commandButton value="Ver Todas" 
+                                       icon="pi pi-list" 
+                                       styleClass="p-button-outlined"
+                                       action="minhasNotificacoes.xhtml?faces-redirect=true&amp;filter=todas" />
+                    </div>
+                </h:panelGroup>
+            </div>
+        </div>
+    </h:form>
+</h:body>
+</html> 

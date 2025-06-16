@@ -40,7 +40,7 @@
                     <p class="page-description">Eventos em que você está inscrito</p>
                 </div>
 
-                <div class="events-grid">
+                <div class="events-grid" id="eventosGrid">
                     <ui:repeat value="#{inscricoesController.listarEventosInscritos(loginController.usuario.codigo)}" var="evento">
                         <div class="event-card p-shadow-2">
                             <div class="event-date-badge">
@@ -83,7 +83,8 @@
             </div>
 
             <!-- Dialog de Detalhes -->
-            <p:dialog header="Detalhes do Evento" widgetVar="detalhesDialog" modal="true" width="60%" styleClass="details-dialog">
+            <p:dialog header="Detalhes do Evento" widgetVar="detalhesDialog" modal="true" width="60%" styleClass="details-dialog"
+                      onHide="PrimeFaces.ab({s:'mainForm:eventosGrid',u:'mainForm:eventosGrid'});">
                 <div class="details-container">
                     <div class="detail-row">
                         <span class="detail-label">ID:</span>
@@ -145,12 +146,13 @@
                     <div class="dialog-footer">
                         <p:commandButton value="Cancelar Inscrição" 
                                        styleClass="p-button-outlined"
-                                       action="#{inscricoesController.cancelarInscricao(eventoController.eventoSelecionado.id)}" />
-                                       
+                                       action="#{inscricoesController.cancelarInscricao(eventoController.eventoSelecionado.id)}"
+                                       update="mainForm:eventosGrid" />
                         <p:commandButton value="Fechar" 
                                        icon="pi pi-times" 
                                        styleClass="p-button-secondary"
-                                       onclick="PF('detalhesDialog').hide()" />
+                                       onclick="PF('detalhesDialog').hide()"
+                                       update="mainForm:eventosGrid" />
                     </div>
                 </f:facet>
             </p:dialog>

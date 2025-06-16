@@ -113,11 +113,16 @@
             <div class="form-container">
                 <div class="form-row">
                     <div class="form-group">
-                        <label for="inscricaoId">ID da Inscrição:</label>
-                        <p:inputText id="inscricaoId" value="#{participantesController.participante.inscricaoId}" 
-                                   styleClass="form-control" 
-                                   placeholder="Digite o ID da inscrição" />
-                        <small class="form-help">Digite o ID da inscrição que deseja registrar presença</small>
+                        <label for="inscricaoId">Selecionar Inscrição:</label>
+                        <p:selectOneMenu id="inscricaoId" value="#{participantesController.participante.inscricaoId}" 
+                                       styleClass="form-control">
+                            <f:selectItem itemLabel="Selecione uma inscrição..." itemValue="" />
+                            <f:selectItems value="#{participantesController.listaInscricoes}" 
+                                         var="inscricao" 
+                                         itemLabel="#{participantesController.formatarInscricaoParaSelect(inscricao)}" 
+                                         itemValue="#{inscricao.id}" />
+                        </p:selectOneMenu>
+                        <small class="form-help">Selecione a inscrição para a qual deseja registrar presença</small>
                     </div>
                     
                     <div class="form-group">

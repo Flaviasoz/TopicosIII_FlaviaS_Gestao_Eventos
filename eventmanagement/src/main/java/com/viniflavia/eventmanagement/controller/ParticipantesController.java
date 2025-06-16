@@ -13,6 +13,7 @@ import jakarta.transaction.Transactional;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.ArrayList;
 
 @Named(value = "participantesController")
 @SessionScoped
@@ -351,6 +352,55 @@ public class ParticipantesController implements Serializable {
             return count > 0;
         } catch (Exception e) {
             return false;
+        }
+    }
+    
+    // Método para obter lista de inscrições para o select
+    public List<InscricoesEntity> getListaInscricoes() {
+        try {
+            return em.createQuery("SELECT i FROM InscricoesEntity i ORDER BY i.dataInscricao DESC", InscricoesEntity.class).getResultList();
+        } catch (Exception e) {
+            System.err.println("Erro ao carregar inscrições: " + e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+    
+    // Método para formatar a inscrição para exibição no select
+    public String formatarInscricaoParaSelect(InscricoesEntity inscricao) {
+        if (inscricao == null) {
+            return "Inscrição inválida";
+        }
+        
+        try {
+            // Buscar informações do usuário
+            String nomeUsuario = "Usuário não encontrado";
+            try {
+                Object usuario = em.createQuery("SELECT u FROM UsuarioEntity u WHERE u.codigo = :codigo")
+                        .setParameter("codigo", inscricao.getUsuarioId())
+                        .getResultList().stream().findFirst().orElse(null);
+                if (usuario != null) {
+                    nomeUsuario = ((com.viniflavia.eventmanagement.entity.UsuarioEntity) usuario).getNome();
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar usuário: " + e.getMessage());
+            }
+            
+            // Buscar informações do evento
+            String tituloEvento = "Evento não encontrado";
+            try {
+                Object evento = em.createQuery("SELECT e FROM EventosEntity e WHERE e.id = :id")
+                        .setParameter("id", inscricao.getEventoId())
+                        .getResultList().stream().findFirst().orElse(null);
+                if (evento != null) {
+                    tituloEvento = ((com.viniflavia.eventmanagement.entity.EventosEntity) evento).getTitulo();
+                }
+            } catch (Exception e) {
+                System.err.println("Erro ao buscar evento: " + e.getMessage());
+            }
+            
+            return "ID: " + inscricao.getId() + " - " + nomeUsuario + " em " + tituloEvento;
+        } catch (Exception e) {
+            return "Inscrição ID: " + inscricao.getId();
         }
     }
 } 

@@ -41,7 +41,13 @@
                             <div class="user-name">#{loginController.usuario.nome}</div>
                         </div>
                         <div class="dropdown-content" id="dropdownContent">
-                            
+                            <p:commandButton value="Sair" 
+                                           styleClass="dropdown-item"
+                                           action="#{loginController.logout}"
+                                           update="@form"
+                                           style="width: 100%; transition: all 0.3s ease;"
+                                           onmouseover="this.style.backgroundColor='#f3f4f6'; this.style.color='#374151';"
+                                           onmouseout="this.style.backgroundColor='transparent'; this.style.color='inherit';" />
                         </div>
                     </div>
                 </div>
